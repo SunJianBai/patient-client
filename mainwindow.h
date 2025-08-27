@@ -2,7 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
 #include "signupform.h"
+#include "main_page.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,5 +25,9 @@ private slots:
 private:
     Ui::MainWindow *ui;
     SignupForm * signPage;
+    Main_Page * mainPage;
+
+    QLabel *errorLabel; // 登录错误提示
+    bool validateLogin(const QString &username, const QString &password);
 };
 #endif // MAINWINDOW_H

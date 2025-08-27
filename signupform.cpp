@@ -27,6 +27,8 @@ void SignupForm::on_signSubmit_clicked()
     QString number = ui->signNumber->text();
     QString area = ui->signArea->text();
     qDebug() << "注册信息:" << username << password << repassword << name << gender << phone << number << area;
+
+    //TODO:
 }
 
 SignupForm::~SignupForm()
