@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧医疗管理系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E86DE;
+            --secondary: #0C7DDB;
+            --success: #27AE60;
+            --light-blue: #E3F2FD;
+            --light-gray: #F5F5F5;
+            --dark-gray: #7F8C8D;
+            --danger: #E74C3C;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary) !important;
+        }
+
+        .sidebar {
+            background: linear-gradient(180deg, #2c3e50 0%, #1a2530 100%);
+            color: white;
+            height: 100vh;
+            position: fixed;
+            padding-top: 60px;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 20px;
+            margin: 4px 0;
+            border-radius: 4px;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 10px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+            padding-top: 80px;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: none;
+        }
+
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0 !important;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .stat-card h2 {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .login-card {
+            width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .message.received {
+            background-color: white;
+            border: 1px solid #eee;
+            border-top-left-radius: 4px;
+        }
+
+        .message.sent {
+            background-color: var(--light-blue);
+            margin-left: auto;
+            border-top-right-radius: 4px;
+        }
+
+        .health-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--light-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+
+        .health-icon i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .doctor-card {
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding-top: 15px;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 登录页面 -->
+    <div id="login-page" class="page active">
+        <div class="login-container">
+            <div class="login-card card">
+                <div class="card-header text-center py-4">
+                    <h3 class="mb-0">智慧医疗管理系统</h3>
+                    <p class="text-muted mt-2">请选择登录方式</p>
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs nav-justified mb-4" id="loginTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="patient-tab" data-bs-toggle="tab"
+                                data-bs-target="#patient" type="button" role="tab">患者登录</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="doctor-tab" data-bs-toggle="tab" data-bs-target="#doctor"
+                                type="button" role="tab">医生登录</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="loginTabsContent">
+                        <div class="tab-pane fade show active" id="patient" role="tabpanel">
+                            <div class="mb-3">
+                                <label for="patientUsername" class="form-label">用户名</label>
+                                <input type="text" class="form-control" id="patientUsername" placeholder="请输入用户名">
+                            </div>
+                            <div class="mb-3">
+                                <label for="patientPassword" class="form-label">密码</label>
+                                <input type="password" class="form-control" id="patientPassword" placeholder="请输入密码">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberPatient">
+                                <label class="form-check-label" for="rememberPatient">记住密码</label>
+                            </div>
+                            <button class="btn btn-primary w-100 mb-3" onclick="login('patient')">登录</button>
+                            <div class="text-center">
+                                <a href="#" class="text-decoration-none">忘记密码？</a> |
+                                <a href="#" class="text-decoration-none" onclick="showPage('register-page')">注册新账号</a>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="doctor" role="tabpanel">
+                            <div class="mb-3">
+                                <label for="doctorId" class="form-label">工号</label>
+                                <input type="text" class="form-control" id="doctorId" placeholder="请输入工号">
+                            </div>
+                            <div class="mb-3">
+                                <label for="doctorPassword" class="form-label">密码</label>
+                                <input type="password" class="form-control" id="doctorPassword" placeholder="请输入密码">
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberDoctor">
+                                <label class="form-check-label" for="rememberDoctor">记住密码</label>
+                            </div>
+                            <button class="btn btn-primary w-100 mb-3" onclick="login('doctor')">登录</button>
+                            <div class="text-center">
+                                <a href="#" class="text-decoration-none">忘记密码？</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 患者主页面 -->
+    <div id="patient-main-page" class="page">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-hospital me-2"></i>智慧医疗管理系统
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fas fa-bell"></i></a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i> 张患者
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>个人资料</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>设置</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#" onclick="showPage('login-page')"><i
+                                            class="fas fa-sign-out-alt me-2"></i>退出登录</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar fixed-top pt-5 mt-3" style="width: 250px;">
+            <div class="d-flex flex-column p-3">
+                <div class="text-center mb-4">
+                    <img src="https://ui-avatars.com/api/?name=张患者&background=2E86DE&color=fff&size=64"
+                        class="rounded-circle mb-2" alt="用户头像">
+                    <h6 class="mb-0">张患者</h6>
+                    <small class="text-white-50">ID: P2023001</small>
+                </div>
+
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link active" onclick="showSection('patient-dashboard')">
+                            <i class="fas fa-home"></i> 首页
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" onclick="showSection('appointment-section')">
+                            <i class="fas fa-calendar-check"></i> 预约挂号
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" onclick="showSection('medical-records')">
+                            <i class="fas fa-file-medical"></i> 我的病例
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" onclick="showSection('prescriptions')">
+                            <i class="fas fa-prescription"></i> 我的医嘱
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" onclick="showSection('chat-section')">
+                            <i class="fas fa-comment-medical"></i> 医患沟通
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" onclick="showSection('health-assessment')">
+                            <i class="fas fa-heartbeat"></i> 健康评估
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" onclick="showSection('medicine-search')">
+                            <i class="fas fa-pills"></i> 药品搜索
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-link" onclick="showSection('profile-section')">
+                            <i class="fas fa-user-cog"></i> 个人中心
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- 患者首页 -->
+            <div id="patient-dashboard" class="content-section">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4>患者控制台</h4>
+                    <div>2023年6月15日 星期四</div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="health-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <h2>3</h2>
+                            <p class="text-muted">待处理预约</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="health-icon">
+                                <i class="fas fa-file-medical"></i>
+                            </div>
+                            <h2>12</h2>
+                            <p class="text-muted">历史病例</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="health-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h2>5</h2>
+                            <p class="text-muted">未读消息</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card stat-card">
+                            <div class="health-icon">
+                                <i class="fas fa-prescription"></i>
+                            </div>
+                            <h2>2</h2>
+                            <p class="text-muted">待处理医嘱</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>近期预约</span>
+                                <a href="#" class="btn btn-sm btn-outline-primary"
+                                    onclick="showSection('appointment-section')">查看全部</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>日期</th>
+                                                <th>时间</th>
+                                                <th>科室</th>
+                                                <th>医生</th>
+                                                <th>状态</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>2023-06-20</td>
+                                                <td>10:30</td>
+                                                <td>内科</td>
+                                                <td>李医生</td>
+                                                <td><span class="badge bg-success">已确认</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2023-06-22</td>
+                                                <td>14:00</td>
+                                                <td>眼科</td>
+                                                <td>王医生</td>
+                                                <td><span class="badge bg-warning">待确认</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>2023-06-25</td>
+                                                <td>09:15</td>
+                                                <td>牙科</td>
+                                                <td>赵医生</td>
+                                                <td><span class="badge bg-info">已预约</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header">健康提示</div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>您最近一次血压测量偏高，建议复查。
+                                </div>
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>您有药物即将用完，请及时续方。
+                                </div>
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle me-2"></i>您的健康评估已完成，总体状况良好。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 其他部分将在这里添加 -->
+            <div id="appointment-section" class="content-section" style="display: none;">
+                <h4 class="mb-4">预约挂号</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <p>这里是预约挂号功能界面，由于篇幅限制，具体内容未完全展开。</p>
+                        <button class="btn btn-primary" onclick="showSection('patient-dashboard')">返回首页</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聊天界面 -->
+            <div id="chat-section" class="content-section" style="display: none;">
+                <h4 class="mb-4">医患沟通</h4>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="chat-container" id="chat-messages">
+                            <div class="message received">
+                                <strong>李医生</strong>
+                                <p>您好，最近感觉怎么样？血压控制得如何？</p>
+                                <small class="text-muted">10:30 AM</small>
+                            </div>
+
+                            <div class="message sent">
+                                <strong>我</strong>
+                                <p>您好医生，最近感觉还好，就是有时候会头晕。</p>
+                                <small class="text-muted">10:32 AM</small>
+                            </div>
+
+                            <div class="message received">
+                                <strong>李医生</strong>
+                                <p>建议您这几天每天测量两次血压并记录，下次复诊时带来给我看。</p>
+                                <small class="text-muted">10:35 AM</small>
+                            </div>
+                        </div>
+
+                        <div class="input-group mt-3">
+                            <input type="text" class="form-control" placeholder="输入消息...">
+                            <button class="btn btn-outline-secondary" type="button"><i
+                                    class="fas fa-paperclip"></i></button>
+                            <button class="btn btn-primary" type="button">发送</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注册页面 -->
+    <div id="register-page" class="page">
+        <div class="login-container">
+            <div class="login-card card">
+                <div class="card-header text-center py-4">
+                    <h3 class="mb-0">用户注册</h3>
+                    <p class="text-muted mt-2">创建您的医疗账户</p>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">姓名</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="请输入您的姓名">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">邮箱</label>
+                            <input type="email" class="form-control" id="email" placeholder="请输入邮箱地址">
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">手机号</label>
+                            <input type="tel" class="form-control" id="phone" placeholder="请输入手机号码">
+                        </div>
+                        <div class="mb-3">
+                            <label for="idCard" class="form-label">身份证号</label>
+                            <input type="text" class="form-control" id="idCard" placeholder="请输入身份证号码">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">密码</label>
+                            <input type="password" class="form-control" id="password" placeholder="请设置密码">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">确认密码</label>
+                            <input type="password" class="form-control" id="confirmPassword" placeholder="请再次输入密码">
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="agreeTerms">
+                            <label class="form-check-label" for="agreeTerms">我已阅读并同意<a href="#"
+                                    class="text-decoration-none">服务条款</a>和<a href="#"
+                                    class="text-decoration-none">隐私政策</a></label>
+                        </div>
+                        <button type="button" class="btn btn-primary w-100 mb-3">注册</button>
+                        <div class="text-center">
+                            <a href="#" class="text-decoration-none" onclick="showPage('login-page')">返回登录</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 页面切换功能
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // 内容区域切换功能
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        // 登录功能
+        function login(userType) {
+            if (userType === 'patient') {
+                showPage('patient-main-page');
+            } else {
+                // 医生登录逻辑
+                alert('医生登录功能');
+            }
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function () {
+            // 默认显示患者首页内容区域
+            showSection('patient-dashboard');
+        });
+    </script>
+</body>
+
+</html>
