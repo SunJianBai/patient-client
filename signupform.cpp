@@ -18,14 +18,14 @@ void SignupForm::on_signBack_clicked()
 
 void SignupForm::on_signSubmit_clicked()
 {
-    QString username = ui->signusername->text();
-    QString password = ui->signpasswd->text();
-    QString repassword = ui->reppasswd->text();
-    QString name = ui->signName->text();
-    QString gender = ui->signGender->text();
-    QString phone = ui->signPhone->text();
-    QString number = ui->signNumber->text();
-    QString area = ui->signArea->text();
+    username = ui->signusername->text();
+    password = ui->signpasswd->text();
+    repassword = ui->reppasswd->text();
+    name = ui->signName->text();
+    gender = ui->signGender->text();
+    phone = ui->signPhone->text();
+    number = ui->signNumber->text();
+    area = ui->signArea->text();
     qDebug() << "注册信息:" << username << password << repassword << name << gender << phone << number << area;
 
     //TODO:

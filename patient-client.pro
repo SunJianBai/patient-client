@@ -20,12 +20,18 @@ SOURCES += \
     main.cpp \
     main_page.cpp \
     mainwindow.cpp \
-    signupform.cpp
+    signupform.cpp \
+    page_appointment.cpp \
+    page_records.cpp \
+    page_chat.cpp
 
 HEADERS += \
     main_page.h \
     mainwindow.h \
-    signupform.h
+    signupform.h \
+    page_appointment.h \
+    page_records.h \
+    page_chat.h 
 
 FORMS += \
     main_page.ui \

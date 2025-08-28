@@ -1,14 +1,1 @@
-#label{
-background-image: url(:/img/resources/logo1.jpg);
-/*background-size: cover;
-background-repeat: no-repeat;*/
-background-position: center; /* 确保图片居中 */
-
-font-size: 34pt;
-color: rgb(255, 255, 255)
-}
-
-QPushButton{
-    font-size: 18pt;
-}
 

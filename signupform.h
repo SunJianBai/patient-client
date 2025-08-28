@@ -21,6 +21,14 @@ private slots:
 
 private:
     Ui::SignupForm *ui;
+    QString username;
+    QString password;
+    QString repassword;
+    QString name;
+    QString gender;
+    QString phone;
+    QString number;
+    QString area;
 };
 
 #endif // SIGNUPFORM_H
