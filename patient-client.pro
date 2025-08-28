@@ -23,7 +23,11 @@ SOURCES += \
     signupform.cpp \
     page_appointment.cpp \
     page_records.cpp \
-    page_chat.cpp
+    page_chat.cpp \
+    page_prescriptions.cpp \
+    page_assessment.cpp \
+    page_medicine.cpp \
+    page_profile.cpp
 
 HEADERS += \
     main_page.h \
@@ -31,12 +35,23 @@ HEADERS += \
     signupform.h \
     page_appointment.h \
     page_records.h \
-    page_chat.h 
+    page_chat.h \
+    page_prescriptions.h \
+    page_assessment.h \
+    page_medicine.h \
+    page_profile.h
 
 FORMS += \
     main_page.ui \
     mainwindow.ui \
-    signupform.ui
+    signupform.ui \
+    page_appointment.ui \
+    page_records.ui \
+    page_chat.ui \
+    page_prescriptions.ui \
+    page_assessment.ui \
+    page_medicine.ui \
+    page_profile.ui
 
 
 # Default rules for deployment.
