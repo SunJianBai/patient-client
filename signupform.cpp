@@ -2,18 +2,20 @@
 #include "ui_signupform.h"
 #include <QDebug>
 
-SignupForm::SignupForm(QWidget *parent) :
+SignupForm::SignupForm(QWidget *parent, QWidget *loginWin) :
     QWidget(parent),
-    ui(new Ui::SignupForm)
+    ui(new Ui::SignupForm),
+    loginWindow(loginWin)
 {
     ui->setupUi(this);
     connect(ui->signBack, &QPushButton::clicked, this, &SignupForm::on_signBack_clicked);
     connect(ui->signSubmit, &QPushButton::clicked, this, &SignupForm::on_signSubmit_clicked);
 }
+
 void SignupForm::on_signBack_clicked()
 {
     this->hide();
-    if (parentWidget()) parentWidget()->show();
+    if (loginWindow) loginWindow->show();
 }
 
 void SignupForm::on_signSubmit_clicked()
@@ -27,7 +29,6 @@ void SignupForm::on_signSubmit_clicked()
     number = ui->signNumber->text();
     area = ui->signArea->text();
     qDebug() << "注册信息:" << username << password << repassword << name << gender << phone << number << area;
-
     //TODO:
 }
 

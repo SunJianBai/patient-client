@@ -18,9 +18,11 @@ public:
 
 private slots:
     void on_sighupBtn_clicked(bool checked);
+    void on_loginBtn_clicked(bool checked);
 
 private:
     Ui::MainWindow *ui;
     SignupForm * signPage;
+    bool validateLogin(const QString &username, const QString &password);
 };
 #endif // MAINWINDOW_H

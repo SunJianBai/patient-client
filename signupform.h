@@ -10,9 +10,8 @@ class SignupForm;
 class SignupForm : public QWidget
 {
     Q_OBJECT
-
 public:
-    explicit SignupForm(QWidget *parent = nullptr);
+    explicit SignupForm(QWidget *parent = nullptr, QWidget *loginWin = nullptr);
     ~SignupForm();
 
 private slots:
@@ -21,6 +20,7 @@ private slots:
 
 private:
     Ui::SignupForm *ui;
+    QWidget *loginWindow; // 新增成员
     QString username;
     QString password;
     QString repassword;

@@ -6,73 +6,108 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1200</width>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>智慧医疗管理系统</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QToolBox" name="toolBox">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>300</y>
-      <width>68</width>
-      <height>142</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="page">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>68</width>
-       <height>68</height>
-      </rect>
-     </property>
-     <attribute name="label">
-      <string>Page 1</string>
-     </attribute>
-    </widget>
-    <widget class="QWidget" name="page_2">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>68</width>
-       <height>68</height>
-      </rect>
-     </property>
-     <attribute name="label">
-      <string>Page 2</string>
-     </attribute>
-    </widget>
-   </widget>
-   <widget class="QGroupBox" name="groupBox">
-    <property name="geometry">
-     <rect>
-      <x>120</x>
-      <y>30</y>
-      <width>120</width>
-      <height>80</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>GroupBox</string>
-    </property>
-   </widget>
+   <layout class="QHBoxLayout" name="mainLayout">
+    <item>
+     <widget class="QWidget" name="sidebar">
+      <property name="minimumWidth">
+       <number>250</number>
+      </property>
+      <property name="maximumWidth">
+       <number>250</number>
+      </property>
+      <layout class="QVBoxLayout" name="sidebarLayout">
+       <item>
+        <widget class="QLabel" name="userAvatar">
+         <property name="text">
+          <string>张患</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="userName">
+         <property name="text">
+          <string>张患者</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="userId">
+         <property name="text">
+          <string>ID: P2023001</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QListWidget" name="navList">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>首页</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>预约挂号</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>我的病例</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>我的医嘱</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>医患沟通</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>健康评估</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>药品搜索</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>个人中心</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QStackedWidget" name="mainStack">
+      <widget class="QWidget" name="dashboardPage"/>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>1200</width>
      <height>29</height>
     </rect>
    </property>
