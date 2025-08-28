@@ -27,7 +27,8 @@ SOURCES += \
     page_prescriptions.cpp \
     page_assessment.cpp \
     page_medicine.cpp \
-    page_profile.cpp
+    page_profile.cpp \
+    page_dashboard.cpp
 
 HEADERS += \
     main_page.h \
@@ -39,7 +40,8 @@ HEADERS += \
     page_prescriptions.h \
     page_assessment.h \
     page_medicine.h \
-    page_profile.h
+    page_profile.h \
+    page_dashboard.h
 
 FORMS += \
     main_page.ui \
@@ -51,7 +53,8 @@ FORMS += \
     page_prescriptions.ui \
     page_assessment.ui \
     page_medicine.ui \
-    page_profile.ui
+    page_profile.ui \
+    page_dashboard.ui
 
 
 # Default rules for deployment.

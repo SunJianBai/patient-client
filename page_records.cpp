@@ -1,8 +1,8 @@
 #include "page_records.h"
-#include <QLabel>
-#include <QVBoxLayout>
-PageRecords::PageRecords(QWidget *parent) : QWidget(parent) {
-    QVBoxLayout *layout = new QVBoxLayout(this);
-    QLabel *label = new QLabel("我的病例页面", this);
-    layout->addWidget(label);
+#include "ui_page_records.h"
+PageRecords::PageRecords(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Records) {
+    ui->setupUi(this);
+}
+PageRecords::~PageRecords() {
+    delete ui;
 }
