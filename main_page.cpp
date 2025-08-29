@@ -64,6 +64,19 @@ Main_Page::Main_Page(QWidget *parent) :
         }
     });
     ui->navList->setCurrentRow(0); // 默认显示首页
+    // 退出登录按钮逻辑
+    connect(ui->logoutBtn, &QPushButton::clicked, this, [=](){
+        this->hide();
+        QWidget *loginWin = nullptr;
+        // 查找主窗口（登录窗口）并显示
+        for (QWidget *w : QApplication::topLevelWidgets()) {
+            if (w->inherits("MainWindow")) {
+                loginWin = w;
+                break;
+            }
+        }
+        if (loginWin) loginWin->show();
+    });
 }
 
 Main_Page::~Main_Page()
