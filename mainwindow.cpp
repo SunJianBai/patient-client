@@ -55,7 +55,6 @@ void MainWindow::on_sighupBtn_clicked(bool checked)
 bool MainWindow::validateLogin(const QString &username, const QString &password)
 {
     return true;
-
     if (!m_socket || m_socket->state() != QAbstractSocket::ConnectedState)
         return false;
 
@@ -65,6 +64,7 @@ bool MainWindow::validateLogin(const QString &username, const QString &password)
     obj["seq"] = 1001;
     obj["user"] = username;
     obj["pswd"] = password;
+    obj["role"] = "patient";
     QJsonDocument doc(obj);
     QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
     // 发送数据（带长度前缀）
@@ -91,6 +91,12 @@ bool MainWindow::validateLogin(const QString &username, const QString &password)
     if (!respDoc.isObject()) return false;
     QJsonObject respObj = respDoc.object();
     if (respObj.value("seq").toInt() == 1001 && respObj.value("ok").toBool()) {
+        // 可在此处获取 user_id
+        if (respObj.contains("payload")) {
+            QJsonObject payload = respObj.value("payload").toObject();
+            int user_id = payload.value("user_id").toInt();
+            qDebug() << "登录成功，user_id:" << user_id;
+        }
         return true;
     } else {
         ui->loginErrorLabel->setText("账号或密码错误");

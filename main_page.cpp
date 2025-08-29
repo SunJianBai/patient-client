@@ -63,6 +63,7 @@ Main_Page::Main_Page(QWidget *parent) :
         }
         if (loginWin) loginWin->show();
     });
+
 }
 
 Main_Page::~Main_Page()
