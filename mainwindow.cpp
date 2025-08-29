@@ -2,12 +2,12 @@
 #include "ui_mainwindow.h"
 #include "main_page.h"
 #include "settingdialog.h"
-#include <QTcpSocket>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , m_socket(new QTcpSocket(this))
+    , m_socket(nullptr)
     , m_settingDialog(nullptr)
 {
     ui->setupUi(this);
@@ -41,6 +41,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_sighupBtn_clicked(bool checked)
 {
+    // 检查连接状态
+    if (!m_socket || m_socket->state() != QAbstractSocket::ConnectedState) {
+        QMessageBox::warning(this, "网络错误", "未连接到服务器，请检查设置！");
+        return;
+    }
     signPage->show();
     qDebug() << "open Sign up Page";
     this->hide();
@@ -58,6 +63,11 @@ void MainWindow::on_loginBtn_clicked(bool checked)
     QString username = ui->usernm->text();
     QString password = ui->passwd->text();
     bool remember = ui->rememberCheckBox->isChecked();
+    // 检查连接状态
+    if (!m_socket || m_socket->state() != QAbstractSocket::ConnectedState) {
+        QMessageBox::warning(this, "网络错误", "未连接到服务器，请检查设置！");
+        return;
+    }
     // 检查必填项
     if (username.isEmpty() || password.isEmpty()) {
         ui->loginErrorLabel->setText("用户名和密码不能为空！");
@@ -83,6 +93,11 @@ void MainWindow::on_loginBtn_clicked(bool checked)
         mainPage->show();
         this->hide();
     }
+}
+
+void MainWindow::setSocket(QTcpSocket *socket)
+{
+    m_socket = socket;
 }
 
 void MainWindow::on_settingBtn_clicked()

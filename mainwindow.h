@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    void setSocket(QTcpSocket *socket);
 
 private slots:
     void on_sighupBtn_clicked(bool checked);
