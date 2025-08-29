@@ -32,6 +32,7 @@ Main_Page::Main_Page(QWidget *parent) :
     PageAssessment *pageAssessment = new PageAssessment(this);
     PageMedicine *pageMedicine = new PageMedicine(this);
     PageProfile *pageProfile = new PageProfile(this);
+    
     // 清空 mainStack
     while (ui->mainStack->count() > 0) {
         QWidget *w = ui->mainStack->widget(0);

@@ -53,6 +53,13 @@
           </property>
          </widget>
         </item>
+        <item row="2" column="0">
+         <widget class="QCheckBox" name="rememberCheckBox">
+          <property name="text">
+           <string>记住我</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </item>
      </layout>

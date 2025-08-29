@@ -42,24 +42,27 @@
 
 ### 1. 用户注册
 
-
 **请求字段**
 
 * `username`：用户名（唯一标识患者）
 * `password`：用户密码（明文传输时必须加密，或者至少走 TLS）
 * `phone`：手机号（可选字段，用于找回密码）
+* 
 
-```json
 {
-  "type": "auth.register",
-  "seq": 1,
+  "type": "register",
+  "seq": 1002,
   "payload": {
-    "username": "alice",
-    "password": "123456",
-    "phone": "13800138000"
+    "user": "alice",
+    "passwd": "123456",
+    "name":"用户真实姓名",
+    "gender":"男"or"女"，
+    "phone": "13800138000"，
+    "id_number": "身份证"，
+    "adress":"北京市"        # 家庭住址
+
   }
 }
-```
 
 **响应字段**
 
@@ -75,29 +78,22 @@
 
   ```json
   {
-    "type": "auth.login",
-    "seq": 2,
-    "payload": {
-      "username": "alice",
-      "password": "123456"
+      "type": "login",   // 功能类型
+      "seq": 1001,         // 请求序号，请求和响应对应
+      "user":"AAA",//用户名
+      "pswd":"1234"//密码
     }
-  }
   ```
 * **响应**
 
   * `user_id`：用户 ID
-  *  `role`：角色（这里应该是 `"patient"`，医生端登录会返回 `"doctor"`）
+  * `role`：角色（这里应该是 `"patient"`，医生端登录会返回 `"doctor"`）
 * * `token`：身份凭证（后续请求必须携带）
 
   ```json
   {
-    "ok": true,
-    "seq": 2,
-    "payload": {
-      "user_id": 101,
-      "role": "patient",
-      "token": "abcd1234"
-    }
+  "seq":1001,
+  "ok":true//成功
   }
   ```
 
@@ -127,10 +123,11 @@
 #### 取消预约 `appt.cancel`
 
 * **请求字段**
+
   * `appt_id`：要取消的预约 ID
 * **响应字段**
-  * 无额外字段，只返回 ok=true/false
 
+  * 无额外字段，只返回 ok=true/false
 * **挂号请求**
 
   ```json
@@ -204,8 +201,8 @@
     * `doctor_id`：医生 ID
     * `diagnosis`：诊断结果
     * `prescription`：处方/医嘱内容
-
 * **请求**
+
   ```json
   {
     "type": "record.list",
@@ -215,6 +212,7 @@
   }
   ```
 * **响应**
+
   ```json
   {
     "ok": true,
@@ -230,7 +228,6 @@
 ---
 
 ### 5. 健康评估
-
 
 * **请求字段**
 
@@ -277,8 +274,8 @@
   * `appointments`：预约统计对象
     * `pending`：待就诊数量
     * `done`：已完成数量
-
 * **请求**
+
   ```json
   {
     "type": "stats.patient",
@@ -288,6 +285,7 @@
   }
   ```
 * **响应**
+
   ```json
   {
     "ok": true,
@@ -300,49 +298,3 @@
   ```
 
 ---
-
-### 7. 聊天
-
-#### 发送消息 `chat.send`
-
-* **请求字段**
-  * `to`：对方 ID（这里是医生 ID）
-  * `content`：消息内容（纯文本，后期可以扩展图片/语音）
-* **响应字段**
-  * `msg_id`：消息 ID（唯一标识，用于去重、存储）
-
-#### 接收消息 `chat.recv`（服务器推送）
-
-* **字段**
-  * `from`：发送方 ID（医生 ID）
-  * `content`：消息内容
-  * `time`：发送时间（ISO 格式）
-
-* **发送消息**
-  ```json
-  {
-    "type": "chat.send",
-    "seq": 9,
-    "token": "abcd1234",
-    "payload": {
-      "to": 2001,
-      "content": "医生你好，我有点发烧"
-    }
-  }
-  ```
-* **响应**
-  ```json
-  {"ok": true, "seq": 9, "payload": {"msg_id": 501}}
-  ```
-* **接收消息** （服务器主动推送）
-
-```json
-  {
-    "type": "chat.recv",
-    "payload": {
-      "from": 2001,
-      "content": "注意多休息，多喝水",
-      "time": "2025-08-25T11:00:00"
-    }
-  }
-```
