@@ -1,10 +1,5 @@
 #include "settingdialog.h"
 #include "ui_settingdialog.h"
-#include <QHostAddress>
-#include <QMessageBox>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QDataStream>
 
 SettingDialog::SettingDialog(QTcpSocket *socket, QWidget *parent)
     : QDialog(parent), ui(new Ui::SettingDialog), m_socket(socket)
@@ -14,6 +9,19 @@ SettingDialog::SettingDialog(QTcpSocket *socket, QWidget *parent)
     connect(ui->disconnectBtn, &QPushButton::clicked, this, &SettingDialog::on_disconnectBtn_clicked);
     connect(m_socket, &QTcpSocket::stateChanged, this, &SettingDialog::onSocketStateChanged);
     onSocketStateChanged(m_socket->state());
+
+    // 自动填充上一次连接的IP和端口
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", "setting_conn");
+    db.setDatabaseName("user.db");
+    if (db.open()) {
+        QSqlQuery query(db);
+        query.exec("CREATE TABLE IF NOT EXISTS setting (id INTEGER PRIMARY KEY AUTOINCREMENT, ip TEXT, port INTEGER)");
+        query.exec("SELECT ip, port FROM setting ORDER BY id DESC LIMIT 1");
+        if (query.next()) {
+            ui->ipEdit->setText(query.value(0).toString());
+            ui->portEdit->setText(query.value(1).toString());
+        }
+    }
 }
 
 SettingDialog::~SettingDialog() {
@@ -25,7 +33,17 @@ void SettingDialog::on_connectBtn_clicked() {
     quint16 port = ui->portEdit->text().toUShort();
     m_socket->connectToHost(QHostAddress(ip), port);
     // 连接成功后自动发送一条 JSON（带长度前缀）
-    connect(m_socket, &QTcpSocket::connected, this, [this]() {
+    connect(m_socket, &QTcpSocket::connected, this, [this, ip, port]() {
+        // 持久化IP和端口
+        QSqlDatabase db = QSqlDatabase::database("setting_conn");
+        if (db.isOpen()) {
+            QSqlQuery query(db);
+            query.exec("DELETE FROM setting");
+            query.prepare("INSERT INTO setting (ip, port) VALUES (?, ?)");
+            query.addBindValue(ip);
+            query.addBindValue(port);
+            query.exec();
+        }
         QJsonObject obj;
         obj["type"] = "client_hello";
         obj["msg"] = "hello server";

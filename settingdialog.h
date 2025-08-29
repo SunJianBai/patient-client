@@ -2,6 +2,14 @@
 #define SETTINGDIALOG_H
 #include <QDialog>
 #include <QTcpSocket>
+#include <QHostAddress>
+#include <QMessageBox>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QDataStream>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 
 namespace Ui {
 class SettingDialog;

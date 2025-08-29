@@ -34,6 +34,11 @@ void SignupForm::on_signSubmit_clicked()
     phone = ui->signPhone->text();
     number = ui->signNumber->text();
     area = ui->signArea->text();
+    // 检查必填项
+    if (username.isEmpty() || password.isEmpty() || repassword.isEmpty() || name.isEmpty() || gender.isEmpty() || phone.isEmpty() || number.isEmpty() || area.isEmpty()) {
+        ui->label_3->setText("所有选项均为必填，请完整填写！");
+        return;
+    }
     // 密码一致性检查
     if (password != repassword) {
         ui->label_3->setText("密码与重复密码不一致，请重新输入！");

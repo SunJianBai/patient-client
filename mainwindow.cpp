@@ -58,6 +58,16 @@ void MainWindow::on_loginBtn_clicked(bool checked)
     QString username = ui->usernm->text();
     QString password = ui->passwd->text();
     bool remember = ui->rememberCheckBox->isChecked();
+    // 检查必填项
+    if (username.isEmpty() || password.isEmpty()) {
+        ui->loginErrorLabel->setText("用户名和密码不能为空！");
+        ui->loginErrorLabel->setStyleSheet("color: red;");
+        ui->loginErrorLabel->show();
+        return;
+    } else {
+        ui->loginErrorLabel->setText("");
+        ui->loginErrorLabel->hide();
+    }
     qDebug() << "登录信息:" << username << password;
     if (validateLogin(username, password)) {
         // 保存到数据库
