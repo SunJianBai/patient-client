@@ -3,6 +3,18 @@
 
 #include <QDebug>
 #include <QWidget>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QMessageBox>
+#include <QTcpSocket>
+#include <QDataStream>
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QFile>
+#include <QMessageBox>
+#include <QTcpSocket>
 
 namespace Ui {
 class SignupForm;
@@ -22,6 +34,7 @@ private slots:
 private:
     Ui::SignupForm *ui;
     QWidget *loginWindow; // 新增成员
+    QTcpSocket *m_socket = nullptr; // 新增socket成员
     QString username;
     QString password;
     QString repassword;
@@ -30,6 +43,8 @@ private:
     QString phone;
     QString number;
     QString area;
+public:
+    void setSocket(QTcpSocket *socket) { m_socket = socket; }
 };
 
 #endif // SIGNUPFORM_H

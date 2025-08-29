@@ -8,9 +8,12 @@
 #include <QSqlError>
 #include <QFile>
 #include <QMessageBox>
+#include <QTcpSocket>
+
+
 #include "signupform.h"
 #include "settingdialog.h"
-#include <QTcpSocket>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

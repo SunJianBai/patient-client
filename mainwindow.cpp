@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     signPage = new SignupForm(nullptr, this);  // 传入登录窗口指针
+    signPage->setSocket(m_socket); // 传递socket实例
 
     // 初始化数据库
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
@@ -53,9 +54,48 @@ void MainWindow::on_sighupBtn_clicked(bool checked)
 
 bool MainWindow::validateLogin(const QString &username, const QString &password)
 {
-    Q_UNUSED(username);
-    Q_UNUSED(password);
-    return true;
+    if (!m_socket || m_socket->state() != QAbstractSocket::ConnectedState)
+        return false;
+
+    // 构造登录JSON
+    QJsonObject obj;
+    obj["type"] = "login";
+    obj["seq"] = 1001;
+    obj["user"] = username;
+    obj["pswd"] = password;
+    QJsonDocument doc(obj);
+    QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+    // 发送数据（带长度前缀）
+    QByteArray packet;
+    QDataStream stream(&packet, QIODevice::WriteOnly);
+    stream.setVersion(QDataStream::Qt_5_10);
+    stream << static_cast<quint32>(jsonData.size());
+    packet.append(jsonData);
+    m_socket->write(packet);
+    m_socket->flush();
+
+    // 阻塞等待服务器返回
+    if (!m_socket->waitForReadyRead(3000)) // 最多等待3秒
+        return false;
+    QByteArray resp = m_socket->readAll();
+    // 解析长度前缀和JSON
+    if (resp.size() < 4) return false;
+    QDataStream respStream(resp);
+    respStream.setVersion(QDataStream::Qt_5_10);
+    quint32 len = 0;
+    respStream >> len;
+    QByteArray jsonResp = resp.right(resp.size() - 4);
+    QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
+    if (!respDoc.isObject()) return false;
+    QJsonObject respObj = respDoc.object();
+    if (respObj.value("seq").toInt() == 1001 && respObj.value("ok").toBool()) {
+        return true;
+    } else {
+        ui->loginErrorLabel->setText("账号或密码错误");
+        ui->loginErrorLabel->setStyleSheet("color: red;");
+        ui->loginErrorLabel->show();
+        return false;
+    }
 }
 
 void MainWindow::on_loginBtn_clicked(bool checked)
@@ -98,6 +138,9 @@ void MainWindow::on_loginBtn_clicked(bool checked)
 void MainWindow::setSocket(QTcpSocket *socket)
 {
     m_socket = socket;
+    if (signPage) {
+        signPage->setSocket(socket);
+    }
 }
 
 void MainWindow::on_settingBtn_clicked()
