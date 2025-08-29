@@ -7,9 +7,7 @@
 #include "page_appointment.h"
 #include "page_records.h"
 #include "page_chat.h"
-#include "page_prescriptions.h"
 #include "page_assessment.h"
-#include "page_medicine.h"
 #include "page_profile.h"
 
 namespace Ui {
@@ -29,10 +27,8 @@ private:
     PageDashboard *pageDashboard;
     PageAppointment *pageAppointment;
     PageRecords *pageRecords;
-    PagePrescriptions *pagePrescriptions;
     PageChat *pageChat;
     PageAssessment *pageAssessment;
-    PageMedicine *pageMedicine;
     PageProfile *pageProfile;
 };
 

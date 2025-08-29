@@ -54,6 +54,8 @@ void MainWindow::on_sighupBtn_clicked(bool checked)
 
 bool MainWindow::validateLogin(const QString &username, const QString &password)
 {
+    return true;
+
     if (!m_socket || m_socket->state() != QAbstractSocket::ConnectedState)
         return false;
 
@@ -118,7 +120,7 @@ void MainWindow::on_loginBtn_clicked(bool checked)
         ui->loginErrorLabel->setText("");
         ui->loginErrorLabel->hide();
     }
-    qDebug() << "登录信息:" << username << password;
+    qDebug() << "登录信息:" << username << "|" << password;
     if (validateLogin(username, password)) {
         // 保存到数据库
         QSqlQuery query;

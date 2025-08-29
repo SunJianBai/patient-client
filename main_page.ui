@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1200</width>
-    <height>800</height>
+  <width>1600</width>
+  <height>1000</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -67,22 +67,12 @@
             </item>
             <item>
              <property name="text">
-              <string>我的医嘱</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
               <string>医患沟通</string>
              </property>
             </item>
             <item>
              <property name="text">
               <string>健康评估</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>药品搜索</string>
              </property>
             </item>
             <item>
