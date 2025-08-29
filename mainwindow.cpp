@@ -1,10 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "main_page.h"
+#include "settingdialog.h"
+#include <QTcpSocket>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , m_socket(new QTcpSocket(this))
+    , m_settingDialog(nullptr)
 {
     ui->setupUi(this);
     signPage = new SignupForm(nullptr, this);  // 传入登录窗口指针
@@ -26,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
         ui->usernm->setText(query.value(0).toString());
         ui->passwd->setText(query.value(1).toString());
     }
+
+    connect(ui->settingBtn, &QToolButton::clicked, this, &MainWindow::on_settingBtn_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -67,4 +73,13 @@ void MainWindow::on_loginBtn_clicked(bool checked)
         mainPage->show();
         this->hide();
     }
+}
+
+void MainWindow::on_settingBtn_clicked()
+{
+    if (!m_settingDialog)
+        m_settingDialog = new SettingDialog(m_socket, this);
+    m_settingDialog->show();
+    m_settingDialog->raise();
+    m_settingDialog->activateWindow();
 }

@@ -18,43 +18,46 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    main_page.cpp \
     mainwindow.cpp \
     signupform.cpp \
-    page_appointment.cpp \
-    page_records.cpp \
-    page_chat.cpp \
-    page_prescriptions.cpp \
-    page_assessment.cpp \
-    page_medicine.cpp \
+    main_page.cpp \
+    page_dashboard.cpp \
     page_profile.cpp \
-    page_dashboard.cpp
+    page_appointment.cpp \
+    page_medicine.cpp \
+    page_prescriptions.cpp \
+    page_records.cpp \
+    page_assessment.cpp \
+    page_chat.cpp \
+    settingdialog.cpp
 
 HEADERS += \
-    main_page.h \
     mainwindow.h \
     signupform.h \
-    page_appointment.h \
-    page_records.h \
-    page_chat.h \
-    page_prescriptions.h \
-    page_assessment.h \
-    page_medicine.h \
+    main_page.h \
+    page_dashboard.h \
     page_profile.h \
-    page_dashboard.h
+    page_appointment.h \
+    page_medicine.h \
+    page_prescriptions.h \
+    page_records.h \
+    page_assessment.h \
+    page_chat.h \
+    settingdialog.h
 
 FORMS += \
-    main_page.ui \
     mainwindow.ui \
     signupform.ui \
-    page_appointment.ui \
-    page_records.ui \
-    page_chat.ui \
-    page_prescriptions.ui \
-    page_assessment.ui \
-    page_medicine.ui \
+    main_page.ui \
+    page_dashboard.ui \
     page_profile.ui \
-    page_dashboard.ui
+    page_appointment.ui \
+    page_medicine.ui \
+    page_prescriptions.ui \
+    page_records.ui \
+    page_assessment.ui \
+    page_chat.ui \
+    settingdialog.ui
 
 
 # Default rules for deployment.
