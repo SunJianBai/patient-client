@@ -1,6 +1,5 @@
 #include "signupform.h"
 #include "ui_signupform.h"
-#include <QDebug>
 
 SignupForm::SignupForm(QWidget *parent, QWidget *loginWin) :
     QWidget(parent),

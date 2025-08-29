@@ -1,15 +1,7 @@
 #include "main_page.h"
 #include "ui_main_page.h"
-#include "page_dashboard.h"
-#include "page_appointment.h"
-#include "page_records.h"
-#include "page_chat.h"
-#include "page_prescriptions.h"
-#include "page_assessment.h"
-#include "page_medicine.h"
-#include "page_profile.h"
-#include <QFile>
-#include <QDebug>
+
+
 
 Main_Page::Main_Page(QWidget *parent) :
     QMainWindow(parent),
@@ -24,14 +16,14 @@ Main_Page::Main_Page(QWidget *parent) :
         qssFile.close();
     }
     // 初始化所有子页面
-    PageDashboard *pageDashboard = new PageDashboard(this);
-    PageAppointment *pageAppointment = new PageAppointment(this);
-    PageRecords *pageRecords = new PageRecords(this);
-    PagePrescriptions *pagePrescriptions = new PagePrescriptions(this);
-    PageChat *pageChat = new PageChat(this);
-    PageAssessment *pageAssessment = new PageAssessment(this);
-    PageMedicine *pageMedicine = new PageMedicine(this);
-    PageProfile *pageProfile = new PageProfile(this);
+    pageDashboard = new PageDashboard(this);
+    pageAppointment = new PageAppointment(this);
+    pageRecords = new PageRecords(this);
+    pagePrescriptions = new PagePrescriptions(this);
+    pageChat = new PageChat(this);
+    pageAssessment = new PageAssessment(this);
+    pageMedicine = new PageMedicine(this);
+    pageProfile = new PageProfile(this);
     
     // 清空 mainStack
     while (ui->mainStack->count() > 0) {

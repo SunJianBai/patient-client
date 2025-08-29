@@ -2,6 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QFile>
+#include <QMessageBox>
 #include "signupform.h"
 
 QT_BEGIN_NAMESPACE

@@ -1,6 +1,7 @@
 #ifndef SIGNUPFORM_H
 #define SIGNUPFORM_H
 
+#include <QDebug>
 #include <QWidget>
 
 namespace Ui {
