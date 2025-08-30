@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "main_page.h"
 #include "settingdialog.h"
 #include "usercontext.h"
 
@@ -12,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent)
     , m_settingDialog(nullptr)
 {
     ui->setupUi(this);
+    mainPage = new Main_Page();
+    mainPage->setSocket(m_socket); // 传递socket实例
     signPage = new SignupForm(nullptr, this);  // 传入登录窗口指针
     signPage->setSocket(m_socket); // 传递socket实例
 
@@ -146,7 +147,6 @@ void MainWindow::on_loginBtn_clicked(bool checked)
             query.addBindValue(password);
             query.exec();
         }
-        Main_Page *mainPage = new Main_Page();
         mainPage->show();
         this->hide();
     }

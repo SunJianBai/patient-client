@@ -9,11 +9,11 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTcpSocket>
-
+#include <QApplication>
 
 #include "signupform.h"
 #include "settingdialog.h"
-
+#include "main_page.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,6 +36,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     SignupForm * signPage;
+    Main_Page *mainPage;
     SettingDialog *m_settingDialog;
     QTcpSocket *m_socket;
     bool validateLogin(const QString &username, const QString &password);

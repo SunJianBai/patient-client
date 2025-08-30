@@ -22,10 +22,13 @@
 #include "page_chat.h"
 #include "page_assessment.h"
 #include "page_profile.h"
+#include "usercontext.h"
 
 namespace Ui {
 class Main_Page;
 }
+
+
 
 class Main_Page : public QMainWindow
 {
@@ -33,9 +36,10 @@ class Main_Page : public QMainWindow
 public:
     explicit Main_Page(QWidget *parent = nullptr);
     ~Main_Page();
+    void setSocket(QTcpSocket *socket);
+    QTcpSocket *m_socket = nullptr;
 private:
     Ui::Main_Page *ui;
-    QTcpSocket *m_socket = nullptr; // 新增socket成员
     // 子页面
     PageDashboard *pageDashboard;
     PageAppointment *pageAppointment;

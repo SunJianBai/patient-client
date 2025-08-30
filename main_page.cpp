@@ -8,6 +8,8 @@ Main_Page::Main_Page(QWidget *parent) :
     ui(new Ui::Main_Page)
 {
     ui->setupUi(this);
+
+    // ...后续UI和页面初始化逻辑...
     // 加载全局样式表
     QFile qssFile(":/style/resources/global.qss");
     if (qssFile.open(QFile::ReadOnly)) {
@@ -33,9 +35,9 @@ Main_Page::Main_Page(QWidget *parent) :
     ui->mainStack->addWidget(pageDashboard);      // index 0 首页
     ui->mainStack->addWidget(pageAppointment);    // index 1 预约挂号
     ui->mainStack->addWidget(pageRecords);        // index 2 我的病例
-    ui->mainStack->addWidget(pageChat);           // index 4 医患沟通
-    ui->mainStack->addWidget(pageAssessment);     // index 5 健康评估
-    ui->mainStack->addWidget(pageProfile);        // index 7 个人中心
+    ui->mainStack->addWidget(pageChat);           // index 3 医患沟通
+    ui->mainStack->addWidget(pageAssessment);     // index 4 健康评估
+    ui->mainStack->addWidget(pageProfile);        // index 5 个人中心
     // 导航栏与页面切换逻辑
     connect(ui->navList, &QListWidget::currentRowChanged, this, [=](int row){
         ui->mainStack->setCurrentIndex(row);
@@ -63,8 +65,51 @@ Main_Page::Main_Page(QWidget *parent) :
         }
         if (loginWin) loginWin->show();
     });
-
 }
+
+
+
+void Main_Page::setSocket(QTcpSocket *socket)
+{
+    m_socket = socket;
+    int user_id = UserContext::instance()->userId();
+    if (m_socket && m_socket->state() == QAbstractSocket::ConnectedState && user_id > 0) {
+        QJsonObject req;
+        req["type"] = "userinfo";
+        req["seq"] = 1099;
+        req["user_id"] = user_id;
+        QJsonDocument doc(req);
+        QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+        QByteArray packet;
+        QDataStream stream(&packet, QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_5_10);
+        stream << static_cast<quint32>(jsonData.size());
+        packet.append(jsonData);
+        m_socket->write(packet);
+        m_socket->flush();
+        if (m_socket->waitForReadyRead(3000)) {
+            QByteArray resp = m_socket->readAll();
+            if (resp.size() >= 4) {
+                QDataStream respStream(resp);
+                respStream.setVersion(QDataStream::Qt_5_10);
+                quint32 len = 0;
+                respStream >> len;
+                QByteArray jsonResp = resp.right(resp.size() - 4);
+                QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
+                if (respDoc.isObject()) {
+                    QJsonObject respObj = respDoc.object();
+                    if (respObj.value("type").toString() == "userinfo" && respObj.value("seq").toInt() == 1099) {
+                        QJsonObject payload = respObj.value("payload").toObject();
+                        UserContext::instance()->setUserId(user_id);
+                        UserContext::instance()->setFromJson(payload);
+                        qDebug() << "个人信息已保存:" << payload;
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 Main_Page::~Main_Page()
 {

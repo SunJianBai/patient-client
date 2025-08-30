@@ -2,6 +2,14 @@
 #define PAGE_APPOINTMENT_H
 
 #include <QWidget>
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QFile>
+#include <QMessageBox>
+#include <QTcpSocket>
+#include <QApplication>
 
 namespace Ui {
 class Page_Appointment;
