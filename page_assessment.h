@@ -9,5 +9,7 @@ public:
     ~PageAssessment();
 private:
     Ui::Page_Assessment *ui;
+    QStringList departmentList;
+    QStringList doctorList;
 };
 #endif // PAGE_ASSESSMENT_H
