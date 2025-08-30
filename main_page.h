@@ -14,7 +14,7 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QTcpSocket>
-
+#include <QJsonArray>
 
 #include "page_dashboard.h"
 #include "page_appointment.h"
@@ -30,6 +30,7 @@ class Main_Page;
 
 
 
+
 class Main_Page : public QMainWindow
 {
     Q_OBJECT
@@ -40,13 +41,13 @@ public:
     QTcpSocket *m_socket = nullptr;
 private:
     Ui::Main_Page *ui;
-    // 子页面
-    PageDashboard *pageDashboard;
-    PageAppointment *pageAppointment;
-    PageRecords *pageRecords;
-    PageChat *pageChat;
-    PageAssessment *pageAssessment;
-    PageProfile *pageProfile;
+    // 子页面延迟初始化
+    PageDashboard *pageDashboard = nullptr;
+    PageAppointment *pageAppointment = nullptr;
+    PageRecords *pageRecords = nullptr;
+    PageChat *pageChat = nullptr;
+    PageAssessment *pageAssessment = nullptr;
+    PageProfile *pageProfile = nullptr;
 };
 
 #endif // MAIN_PAGE_H

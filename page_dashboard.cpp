@@ -1,12 +1,137 @@
+
 #include "page_dashboard.h"
 #include "ui_page_dashboard.h"
 #include "usercontext.h"
+#include "main_page.h"
+
 
 PageDashboard::PageDashboard(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Dashboard) {
     ui->setupUi(this);
-    int user_id = UserContext::instance()->userId();
-    qDebug() << "user_id:" << user_id;
+    // 构造函数只做UI初始化，不做数据请求
+    qDebug() << "[Dashboard] 构造完成，等待 fetchAppointments() 调用";
 }
+
+// 预约列表请求与解析，延迟调用
+void PageDashboard::fetchAppointments() {
+    // 获取当前用户ID
+    int user_id = UserContext::instance()->userId();
+    qDebug() << "[Dashboard] fetchAppointments: user_id=" << user_id;
+
+    // 获取 Main_Page 的 socket
+    QTcpSocket *socket = nullptr;
+    QWidget *p = parentWidget();
+    while (p) {
+        Main_Page *mainPage = qobject_cast<Main_Page *>(p);
+        if (mainPage) {
+            socket = mainPage->m_socket;
+            break;
+        }
+        p = p->parentWidget();
+    }
+    qDebug() << "[Dashboard] fetchAppointments: 获取到socket=" << socket;
+    int num_pending = 0;
+    int num_confirmed = 0;
+    int num_cancelled = 0;
+    QVector<QJsonObject> appointments;
+    // 检查 socket 和 user_id 是否有效
+    if (socket && socket->state() == QAbstractSocket::ConnectedState && user_id > 0) {
+        // 构造请求 JSON
+        QJsonObject req;
+        req["type"] = "appt.list";
+        req["seq"] = 1004;
+        req["user_id"] = user_id;
+        req["payload"] = QJsonObject();
+        QJsonDocument doc(req);
+        QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+        QByteArray packet;
+        QDataStream stream(&packet, QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_5_10);
+        stream << static_cast<quint32>(jsonData.size());
+        packet.append(jsonData);
+        qDebug() << "[Dashboard] fetchAppointments: 发送到服务器:" << QString::fromUtf8(jsonData);
+        socket->write(packet);
+        socket->flush();
+        if (socket->waitForReadyRead(3000)) {
+            QByteArray resp = socket->readAll();
+            qDebug() << "[Dashboard] fetchAppointments: 收到服务器反馈长度:" << resp.size();
+            if (resp.size() >= 4) {
+                QDataStream respStream(resp);
+                respStream.setVersion(QDataStream::Qt_5_10);
+                quint32 len = 0;
+                respStream >> len;
+                QByteArray jsonResp = resp.right(resp.size() - 4);
+                qDebug() << "[Dashboard] fetchAppointments: 返回json:" << QString::fromUtf8(jsonResp);
+                QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
+                if (respDoc.isObject()) {
+                    QJsonObject respObj = respDoc.object();
+                    if(true){
+                        // ================== 测试数据区域（可注释/取消注释启用） ==================
+                        // 说明：如需测试，无需服务器返回时可直接填充数据到UI
+                        // 建议仅在开发/调试阶段启用，正式环境请注释掉此块
+                        qDebug() << "[Dashboard] 使用本地测试数据填充UI";
+                        num_pending = 2;
+                        num_confirmed = 8;
+                        num_cancelled = 1;
+                        appointments.append(QJsonObject{{"appt_id", 101}, {"time", "2025-09-01 09:00"}, {"department_name", "心内科"}, {"doctor_name", "王医生"}, {"status", "待处理"}});
+                        appointments.append(QJsonObject{{"appt_id", 102}, {"time", "2025-09-02 14:30"}, {"department_name", "神经科"}, {"doctor_name", "李医生"}, {"status", "已确认"}});
+                        appointments.append(QJsonObject{{"appt_id", 103}, {"time", "2025-09-03 10:15"}, {"department_name", "呼吸科"}, {"doctor_name", "张医生"}, {"status", "已取消"}});
+                        // ================== 测试数据区域结束 ==================
+                    }
+                    else if (respObj.value("seq").toInt() == 1004 && respObj.value("ok").toBool()) {
+                        QJsonObject payload = respObj.value("payload").toObject();
+                        num_pending = payload.value("num_pending").toInt();
+                        num_confirmed = payload.value("num_confirmed").toInt();
+                        num_cancelled = payload.value("num_cancelled").toInt();
+                        qDebug() << "[Dashboard] fetchAppointments: num_pending:" << num_pending;
+                        qDebug() << "[Dashboard] fetchAppointments: num_confirmed:" << num_confirmed;
+                        qDebug() << "[Dashboard] fetchAppointments: num_cancelled:" << num_cancelled;
+                        QJsonArray appointments = payload.value("appointments").toArray();
+                        qDebug() << "[Dashboard] fetchAppointments: appointments数量:" << appointments.size();
+                        for (const QJsonValue &val : appointments) {
+                            QJsonObject appt = val.toObject();
+                            qDebug() << "[Dashboard] fetchAppointments: appt_id:" << appt.value("appt_id").toInt();
+                            qDebug() << "[Dashboard] fetchAppointments: doctor_name:" << appt.value("doctor_name").toString();
+                            qDebug() << "[Dashboard] fetchAppointments: department_name:" << appt.value("department_name").toString();
+                            qDebug() << "[Dashboard] fetchAppointments: time:" << appt.value("time").toString();
+                            qDebug() << "[Dashboard] fetchAppointments: status:" << appt.value("status").toString();
+                        }
+                    } else {
+                        qDebug() << "[Dashboard] fetchAppointments: 服务器返回ok=false或seq不匹配";
+                    }
+                } else {
+                    qDebug() << "[Dashboard] fetchAppointments: 返回json解析失败";
+                }
+            } else {
+                qDebug() << "[Dashboard] fetchAppointments: 返回数据长度异常";
+            }
+        } else {
+            qDebug() << "[Dashboard] fetchAppointments: 服务器无返回";
+        }
+    } else {
+        qDebug() << "[Dashboard] fetchAppointments: socket未连接或user_id无效";
+    }
+    // ================== 统一UI赋值区域 ==================
+    if (ui->pending) ui->pending->setText(QString::number(num_pending));
+    if (ui->confirmed) ui->confirmed->setText(QString::number(num_confirmed));
+    if (ui->cancelled) ui->cancelled->setText(QString::number(num_cancelled));
+
+    if (ui->tableRecentAppointment) {
+        ui->tableRecentAppointment->setRowCount(appointments.size());
+        ui->tableRecentAppointment->setColumnCount(5);
+        QStringList header;
+        header << "id" << "时间" << "科室" << "医生" << "状态";
+        ui->tableRecentAppointment->setHorizontalHeaderLabels(header);
+        for (int i = 0; i < appointments.size(); ++i) {
+            const QJsonObject &appt = appointments[i];
+            ui->tableRecentAppointment->setItem(i, 0, new QTableWidgetItem(QString::number(appt.value("appt_id").toInt())));
+            ui->tableRecentAppointment->setItem(i, 1, new QTableWidgetItem(appt.value("time").toString()));
+            ui->tableRecentAppointment->setItem(i, 2, new QTableWidgetItem(appt.value("department_name").toString()));
+            ui->tableRecentAppointment->setItem(i, 3, new QTableWidgetItem(appt.value("doctor_name").toString()));
+            ui->tableRecentAppointment->setItem(i, 4, new QTableWidgetItem(appt.value("status").toString()));
+        }
+    }
+}
+
 PageDashboard::~PageDashboard() {
     delete ui;
 }

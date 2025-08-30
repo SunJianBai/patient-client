@@ -23,7 +23,7 @@
        </property>
        <layout class="QVBoxLayout" name="cardAppointmentLayout">
         <item>
-         <widget class="QLabel" name="labelAppointment">
+         <widget class="QLabel" name="pending">
           <property name="text">
            <string>3</string>
           </property>
@@ -42,7 +42,7 @@
        </property>
        <layout class="QVBoxLayout" name="cardRecordsLayout">
         <item>
-         <widget class="QLabel" name="labelRecords">
+         <widget class="QLabel" name="confirmed">
           <property name="text">
            <string>12</string>
           </property>
@@ -61,7 +61,7 @@
        </property>
        <layout class="QVBoxLayout" name="cardMessagesLayout">
         <item>
-         <widget class="QLabel" name="labelMessages">
+         <widget class="QLabel" name="cancelled">
           <property name="text">
            <string>5</string>
           </property>
@@ -87,7 +87,7 @@
          <widget class="QTableWidget" name="tableRecentAppointment">
           <column>
            <property name="text">
-            <string>日期</string>
+            <string>id</string>
            </property>
           </column>
           <column>
