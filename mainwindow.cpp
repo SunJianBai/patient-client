@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "main_page.h"
 #include "settingdialog.h"
+#include "usercontext.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -54,7 +55,13 @@ void MainWindow::on_sighupBtn_clicked(bool checked)
 
 bool MainWindow::validateLogin(const QString &username, const QString &password)
 {
+    // TEST==================================================================
+    int user_id = 1001;
+    UserContext::instance()->setUserId(user_id);
+    qDebug() << "登录成功，user_id:" << user_id;
     return true;
+    // ======================================================================
+
     if (!m_socket || m_socket->state() != QAbstractSocket::ConnectedState)
         return false;
 
@@ -94,7 +101,9 @@ bool MainWindow::validateLogin(const QString &username, const QString &password)
         // 可在此处获取 user_id
         if (respObj.contains("payload")) {
             QJsonObject payload = respObj.value("payload").toObject();
-            int user_id = payload.value("user_id").toInt();
+            int user_id = 1001;
+            user_id = payload.value("user_id").toInt();
+            UserContext::instance()->setUserId(user_id);
             qDebug() << "登录成功，user_id:" << user_id;
         }
         return true;

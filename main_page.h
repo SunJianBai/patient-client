@@ -1,8 +1,21 @@
 #ifndef MAIN_PAGE_H
 #define MAIN_PAGE_H
-#include <QFile>
-#include <QDebug>
 #include <QMainWindow>
+#include <QDebug>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QMessageBox>
+#include <QTcpSocket>
+#include <QDataStream>
+#include <QDebug>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QFile>
+#include <QMessageBox>
+#include <QTcpSocket>
+
+
 #include "page_dashboard.h"
 #include "page_appointment.h"
 #include "page_records.h"
@@ -22,7 +35,7 @@ public:
     ~Main_Page();
 private:
     Ui::Main_Page *ui;
-
+    QTcpSocket *m_socket = nullptr; // 新增socket成员
     // 子页面
     PageDashboard *pageDashboard;
     PageAppointment *pageAppointment;

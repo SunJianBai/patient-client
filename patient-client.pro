@@ -39,7 +39,8 @@ HEADERS += \
     page_records.h \
     page_assessment.h \
     page_chat.h \
-    settingdialog.h
+    settingdialog.h \
+    usercontext.h
 
 FORMS += \
     mainwindow.ui \

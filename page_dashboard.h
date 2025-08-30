@@ -1,6 +1,7 @@
 #ifndef PAGE_DASHBOARD_H
 #define PAGE_DASHBOARD_H
 #include <QWidget>
+#include <QDebug>
 namespace Ui { class Page_Dashboard; }
 class PageDashboard : public QWidget {
     Q_OBJECT
