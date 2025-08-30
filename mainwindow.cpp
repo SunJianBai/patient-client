@@ -147,6 +147,7 @@ void MainWindow::on_loginBtn_clicked(bool checked)
             query.addBindValue(password);
             query.exec();
         }
+        mainPage->setSocket(m_socket); // 登录成功后再传递socket，保证user_id已设置
         mainPage->show();
         this->hide();
     }

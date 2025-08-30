@@ -3,13 +3,12 @@
 
 
 
+
 Main_Page::Main_Page(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::Main_Page)
 {
     ui->setupUi(this);
-
-    // ...后续UI和页面初始化逻辑...
     // 加载全局样式表
     QFile qssFile(":/style/resources/global.qss");
     if (qssFile.open(QFile::ReadOnly)) {
@@ -24,7 +23,7 @@ Main_Page::Main_Page(QWidget *parent) :
     pageChat = new PageChat(this);
     pageAssessment = new PageAssessment(this);
     pageProfile = new PageProfile(this);
-    
+
     // 清空 mainStack
     while (ui->mainStack->count() > 0) {
         QWidget *w = ui->mainStack->widget(0);
@@ -38,6 +37,11 @@ Main_Page::Main_Page(QWidget *parent) :
     ui->mainStack->addWidget(pageChat);           // index 3 医患沟通
     ui->mainStack->addWidget(pageAssessment);     // index 4 健康评估
     ui->mainStack->addWidget(pageProfile);        // index 5 个人中心
+
+    // 动态设置sidebar患者名称和ID
+    ui->userName->setText(UserContext::instance()->name());
+    ui->userId->setText(QString("ID: %1").arg(UserContext::instance()->userId()));
+    // debug输出所有个人信息
     // 导航栏与页面切换逻辑
     connect(ui->navList, &QListWidget::currentRowChanged, this, [=](int row){
         ui->mainStack->setCurrentIndex(row);
@@ -69,6 +73,7 @@ Main_Page::Main_Page(QWidget *parent) :
 
 
 
+
 void Main_Page::setSocket(QTcpSocket *socket)
 {
     m_socket = socket;
@@ -85,6 +90,7 @@ void Main_Page::setSocket(QTcpSocket *socket)
         stream.setVersion(QDataStream::Qt_5_10);
         stream << static_cast<quint32>(jsonData.size());
         packet.append(jsonData);
+        qDebug() << "发送到服务器:" << QString::fromUtf8(jsonData);
         m_socket->write(packet);
         m_socket->flush();
         if (m_socket->waitForReadyRead(3000)) {
@@ -95,6 +101,7 @@ void Main_Page::setSocket(QTcpSocket *socket)
                 quint32 len = 0;
                 respStream >> len;
                 QByteArray jsonResp = resp.right(resp.size() - 4);
+                qDebug() << "收到服务器反馈:" << QString::fromUtf8(jsonResp);
                 QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
                 if (respDoc.isObject()) {
                     QJsonObject respObj = respDoc.object();
@@ -102,7 +109,20 @@ void Main_Page::setSocket(QTcpSocket *socket)
                         QJsonObject payload = respObj.value("payload").toObject();
                         UserContext::instance()->setUserId(user_id);
                         UserContext::instance()->setFromJson(payload);
+                            // debug输出所有个人信息（只在成功获取后输出）
+                            qDebug() << "获取到患者信息:";
+                            qDebug() << "user:" << UserContext::instance()->user();
+                            qDebug() << "role:" << UserContext::instance()->role();
+                            qDebug() << "name:" << UserContext::instance()->name();
+                            qDebug() << "gender:" << UserContext::instance()->gender();
+                            qDebug() << "phone:" << UserContext::instance()->phone();
+                            qDebug() << "id_number:" << UserContext::instance()->idNumber();
+                            qDebug() << "adress:" << UserContext::instance()->adress();
+                            qDebug() << "user_id:" << UserContext::instance()->userId();
                         qDebug() << "个人信息已保存:" << payload;
+                        // 刷新sidebar显示
+                        ui->userName->setText(UserContext::instance()->name());
+                        ui->userId->setText(QString("ID: %1").arg(UserContext::instance()->userId()));
                     }
                 }
             }
