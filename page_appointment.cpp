@@ -5,6 +5,15 @@
 PageAppointment::PageAppointment(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Appointment) {
     ui->setupUi(this);
 
+
+    // 设置输入范围约束
+    ui->age->setMinimum(1);
+    ui->age->setMaximum(150);
+    ui->height->setMinimum(50);
+    ui->height->setMaximum(300);
+    ui->weight->setMinimum(0);
+    ui->weight->setMaximum(500);
+
     // 初始化科室和医生选择项
     ui->comboDepartment->addItem("内科");
     ui->comboDepartment->addItem("外科");

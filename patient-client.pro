@@ -40,7 +40,8 @@ HEADERS += \
     page_assessment.h \
     page_chat.h \
     settingdialog.h \
-    usercontext.h
+    usercontext.h \
+    datetime_utils.h
 
 FORMS += \
     mainwindow.ui \

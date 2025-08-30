@@ -1,13 +1,11 @@
 #include "signupform.h"
 #include "ui_signupform.h"
 
-#include "signupform.h"
-#include "ui_signupform.h"
-
 SignupForm::~SignupForm()
 {
     delete ui;
 }
+
 
 SignupForm::SignupForm(QWidget *parent, QWidget *loginWin) :
     QWidget(parent),
@@ -15,6 +13,8 @@ SignupForm::SignupForm(QWidget *parent, QWidget *loginWin) :
     loginWindow(loginWin)
 {
     ui->setupUi(this);
+    // 防止注册按钮重复连接槽函数
+    disconnect(ui->signSubmit, nullptr, nullptr, nullptr);
     connect(ui->signBack, &QPushButton::clicked, this, &SignupForm::on_signBack_clicked);
     connect(ui->signSubmit, &QPushButton::clicked, this, &SignupForm::on_signSubmit_clicked);
     // 性别选项互斥
