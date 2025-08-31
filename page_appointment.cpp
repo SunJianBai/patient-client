@@ -1,6 +1,7 @@
 #include "page_appointment.h"
 #include "ui_page_appointment.h"
 #include "main_page.h"
+#include "datetime_utils.h"
 
 PageAppointment::PageAppointment(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Appointment) {
     ui->setupUi(this);
@@ -150,9 +151,9 @@ PageAppointment::PageAppointment(QWidget *parent) : QWidget(parent), ui(new Ui::
         qDebug() << "医生:" << doctor;
 
         // 获取医生id（这里只做演示，实际应从医生列表获取id）
-        int doctor_id = 2001; // 可根据实际医生选择做映射
-        QString start_time = "2025-08-25 10:00"; // 可根据实际选择时间
-        int user_id = 1001; // 实际应从全局用户信息获取
+        int doctor_id = 1; // 可根据实际医生选择做映射
+        QString start_time = getCurrentDateTimeString(); // 可根据实际选择时间
+        int user_id = UserContext::instance()->userId(); // 实际应从全局用户信息获取
 
         // 构造JSON请求
         QJsonObject payload;

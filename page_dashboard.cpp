@@ -32,7 +32,7 @@ void PageDashboard::fetchAppointments() {
     int num_pending = 0;
     int num_confirmed = 0;
     int num_cancelled = 0;
-    QVector<QJsonObject> appointments;
+    QJsonArray appointments;
     // 检查 socket 和 user_id 是否有效
     if (socket && socket->state() == QAbstractSocket::ConnectedState && user_id > 0) {
         // 构造请求 JSON
@@ -85,7 +85,7 @@ void PageDashboard::fetchAppointments() {
                         qDebug() << "[Dashboard] fetchAppointments: num_pending:" << num_pending;
                         qDebug() << "[Dashboard] fetchAppointments: num_confirmed:" << num_confirmed;
                         qDebug() << "[Dashboard] fetchAppointments: num_cancelled:" << num_cancelled;
-                        QJsonArray appointments = payload.value("appointments").toArray();
+                        appointments = payload.value("appointments").toArray();
                         qDebug() << "[Dashboard] fetchAppointments: appointments数量:" << appointments.size();
                         for (const QJsonValue &val : appointments) {
                             QJsonObject appt = val.toObject();
@@ -122,7 +122,7 @@ void PageDashboard::fetchAppointments() {
         header << "id" << "时间" << "科室" << "医生" << "状态";
         ui->tableRecentAppointment->setHorizontalHeaderLabels(header);
         for (int i = 0; i < appointments.size(); ++i) {
-            const QJsonObject &appt = appointments[i];
+            QJsonObject appt = appointments[i].toObject();
             ui->tableRecentAppointment->setItem(i, 0, new QTableWidgetItem(QString::number(appt.value("appt_id").toInt())));
             ui->tableRecentAppointment->setItem(i, 1, new QTableWidgetItem(appt.value("time").toString()));
             ui->tableRecentAppointment->setItem(i, 2, new QTableWidgetItem(appt.value("department_name").toString()));

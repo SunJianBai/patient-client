@@ -194,12 +194,99 @@ PageProfile::PageProfile(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Pro
         }
     });
 
+
     // 修改密码板块的“返回”按钮
     connect(ui->back1, &QPushButton::clicked, this, [=](){
         ui->info->setVisible(true);
         ui->cg_info->setVisible(false);
         ui->cg_passwd->setVisible(false);
+        if (QLabel *err = ui->cg_passwd->findChild<QLabel*>("label_16")) err->clear();
         refreshUserInfo();
+    });
+
+    // 修改密码板块的“修改”按钮
+    connect(ui->pushButton_2, &QPushButton::clicked, this, [=](){
+        QString old_passwd = ui->lineEdit->text();
+        QString new_passwd = ui->lineEdit_2->text();
+        QString new_passwd2 = ui->lineEdit_3->text();
+        int user_id = UserContext::instance()->userId();
+        QLabel *errLabel = ui->cg_passwd->findChild<QLabel*>("label_16");
+        qDebug() << "[Profile] 修改密码输入:" << old_passwd << new_passwd << new_passwd2 << "user_id=" << user_id;
+        // 本地完整性校验
+        if (old_passwd.isEmpty() || new_passwd.isEmpty() || new_passwd2.isEmpty()) {
+            QString err = "所有字段均不能为空！";
+            if (errLabel) { errLabel->setText(err); errLabel->setStyleSheet("color: red;"); }
+            qDebug() << "[Profile] 修改密码校验失败:" << err;
+            return;
+        }
+        if (new_passwd != new_passwd2) {
+            QString err = "两次密码应该一致";
+            if (errLabel) { errLabel->setText(err); errLabel->setStyleSheet("color: red;"); }
+            qDebug() << "[Profile] 修改密码校验失败:" << err;
+            return;
+        }
+        if (errLabel) errLabel->clear();
+        // 构造JSON请求
+        QJsonObject payload;
+        payload["user_id"] = user_id;
+        payload["passwd"] = old_passwd;
+        payload["new_passwd"] = new_passwd;
+        QJsonObject req;
+        req["type"] = "change_passwd";
+        req["seq"] = 1051;
+        req["payload"] = payload;
+        QJsonDocument doc(req);
+        QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+        QByteArray packet;
+        QDataStream stream(&packet, QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_5_10);
+        stream << static_cast<quint32>(jsonData.size());
+        packet.append(jsonData);
+        qDebug() << "[Profile] 发送修改密码请求:" << QString::fromUtf8(jsonData);
+        if (socket && socket->state() == QAbstractSocket::ConnectedState) {
+            socket->write(packet);
+            socket->flush();
+            if (socket->waitForReadyRead(3000)) {
+                QByteArray resp = socket->readAll();
+                qDebug() << "[Profile] 收到修改密码反馈长度:" << resp.size();
+                if (resp.size() >= 4) {
+                    QDataStream respStream(resp);
+                    respStream.setVersion(QDataStream::Qt_5_10);
+                    quint32 len = 0;
+                    respStream >> len;
+                    QByteArray jsonResp = resp.right(resp.size() - 4);
+                    qDebug() << "[Profile] 修改密码返回json:" << QString::fromUtf8(jsonResp);
+                    QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
+                    if (respDoc.isObject()) {
+                        QJsonObject respObj = respDoc.object();
+                        if (respObj.value("type").toString() == "change_passwd" && respObj.value("seq").toInt() == 1051) {
+                            bool ok = respObj.value("ok").toBool();
+                            qDebug() << "[Profile] 修改密码结果ok:" << ok;
+                            if (ok) {
+                                QMessageBox::information(this, "修改成功", "密码修改成功！");
+                                ui->info->setVisible(true);
+                                ui->cg_info->setVisible(false);
+                                ui->cg_passwd->setVisible(false);
+                                if (errLabel) errLabel->clear();
+                                refreshUserInfo();
+                            } else {
+                                QString err = "原密码不正确";
+                                if (errLabel) { errLabel->setText(err); errLabel->setStyleSheet("color: red;"); }
+                                qDebug() << "[Profile] 服务器返回失败:" << err;
+                            }
+                        }
+                    }
+                }
+            } else {
+                QString err = "服务器无响应，修改失败！";
+                if (errLabel) { errLabel->setText(err); errLabel->setStyleSheet("color: red;"); }
+                qDebug() << "[Profile] 服务器无响应:" << err;
+            }
+        } else {
+            QString err = "未连接到服务器，无法修改！";
+            if (errLabel) { errLabel->setText(err); errLabel->setStyleSheet("color: red;"); }
+            qDebug() << "[Profile] socket未连接:" << err;
+        }
     });
 }
 
