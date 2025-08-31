@@ -15,10 +15,361 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>这里是“健康评估”页面</string>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <layout class="QVBoxLayout" name="verticalLayout_scroll">
+
+       <!-- 基本信息 -->
+       <item>
+        <widget class="QGroupBox" name="group_basic">
+         <property name="title">
+          <string>一、基本信息</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_basic">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_age">
+            <property name="text">
+             <string>1. 您的年龄范围是？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="combo_age">
+            <item><property name="text"><string>18岁以下</string></property></item>
+            <item><property name="text"><string>18-30岁</string></property></item>
+            <item><property name="text"><string>31-45岁</string></property></item>
+            <item><property name="text"><string>46-60岁</string></property></item>
+            <item><property name="text"><string>60岁以上</string></property></item>
+           </widget>
+          </item>
+
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_gender">
+            <property name="text">
+             <string>2. 您的性别是？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="combo_gender">
+            <item><property name="text"><string>男</string></property></item>
+            <item><property name="text"><string>女</string></property></item>
+           </widget>
+          </item>
+
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_bmi">
+            <property name="text">
+             <string>3. 您的体重状况？（自报）</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="combo_bmi">
+            <item><property name="text"><string>偏瘦</string></property></item>
+            <item><property name="text"><string>正常</string></property></item>
+            <item><property name="text"><string>超重</string></property></item>
+            <item><property name="text"><string>肥胖</string></property></item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- 生活方式 -->
+       <item>
+        <widget class="QGroupBox" name="group_lifestyle">
+         <property name="title">
+          <string>二、生活方式</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_lifestyle">
+
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_sleep">
+            <property name="text">
+             <string>4. 您平均每天的睡眠时间是？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="combo_sleep">
+            <item><property name="text"><string>少于5小时</string></property></item>
+            <item><property name="text"><string>5-6小时</string></property></item>
+            <item><property name="text"><string>7-8小时</string></property></item>
+            <item><property name="text"><string>超过8小时</string></property></item>
+           </widget>
+          </item>
+
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_sleepquality">
+            <property name="text">
+             <string>5. 您的睡眠质量如何？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="combo_sleepquality">
+            <item><property name="text"><string>很好</string></property></item>
+            <item><property name="text"><string>一般</string></property></item>
+            <item><property name="text"><string>较差</string></property></item>
+            <item><property name="text"><string>经常失眠</string></property></item>
+           </widget>
+          </item>
+
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_smoke">
+            <property name="text">
+             <string>6. 您是否有吸烟习惯？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="combo_smoke">
+            <item><property name="text"><string>从不吸烟</string></property></item>
+            <item><property name="text"><string>偶尔</string></property></item>
+            <item><property name="text"><string>经常</string></property></item>
+            <item><property name="text"><string>大量</string></property></item>
+           </widget>
+          </item>
+
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_drink">
+            <property name="text">
+             <string>7. 您是否有饮酒习惯？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QComboBox" name="combo_drink">
+            <item><property name="text"><string>从不饮酒</string></property></item>
+            <item><property name="text"><string>偶尔饮酒</string></property></item>
+            <item><property name="text"><string>经常饮酒</string></property></item>
+            <item><property name="text"><string>大量饮酒</string></property></item>
+           </widget>
+          </item>
+
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_exercise">
+            <property name="text">
+             <string>8. 您每周的运动频率是？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QComboBox" name="combo_exercise">
+            <item><property name="text"><string>几乎不运动</string></property></item>
+            <item><property name="text"><string>1-2次/周</string></property></item>
+            <item><property name="text"><string>3-5次/周</string></property></item>
+            <item><property name="text"><string>≥6次/周</string></property></item>
+           </widget>
+          </item>
+
+         </layout>
+        </widget>
+       </item>
+
+       <!-- 饮食习惯 -->
+       <item>
+        <widget class="QGroupBox" name="group_diet">
+         <property name="title">
+          <string>三、饮食习惯</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_diet">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_vege">
+            <property name="text">
+             <string>9. 您平均每天吃蔬菜的次数？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="combo_vege">
+            <item><property name="text"><string>几乎不吃</string></property></item>
+            <item><property name="text"><string>1次</string></property></item>
+            <item><property name="text"><string>2-3次</string></property></item>
+            <item><property name="text"><string>≥4次</string></property></item>
+           </widget>
+          </item>
+
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_fastfood">
+            <property name="text">
+             <string>10. 您吃快餐/外卖的频率？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="combo_fastfood">
+            <item><property name="text"><string>几乎不吃</string></property></item>
+            <item><property name="text"><string>偶尔</string></property></item>
+            <item><property name="text"><string>每周3-4次</string></property></item>
+            <item><property name="text"><string>每天都吃</string></property></item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- 慢性病史 -->
+       <item>
+        <widget class="QGroupBox" name="group_chronic">
+         <property name="title">
+          <string>四、慢性疾病史</string>
+         </property>
+         <layout class="QVBoxLayout" name="vbox_chronic">
+          <item>
+           <widget class="QCheckBox" name="chk_hypertension">
+            <property name="text">
+             <string>高血压</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chk_diabetes">
+            <property name="text">
+             <string>糖尿病</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chk_heart">
+            <property name="text">
+             <string>心脏病</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chk_none">
+            <property name="text">
+             <string>无</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- 家族病史 -->
+       <item>
+        <widget class="QGroupBox" name="group_family">
+         <property name="title">
+          <string>五、家族病史</string>
+         </property>
+         <layout class="QVBoxLayout" name="vbox_family">
+          <item>
+           <widget class="QCheckBox" name="chk_family_hypertension">
+            <property name="text">
+             <string>高血压</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chk_family_diabetes">
+            <property name="text">
+             <string>糖尿病</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chk_family_heart">
+            <property name="text">
+             <string>心脏病/中风</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="chk_family_none">
+            <property name="text">
+             <string>无</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- 心理健康 -->
+       <item>
+        <widget class="QGroupBox" name="group_psych">
+         <property name="title">
+          <string>六、心理健康</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_psych">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_stress">
+            <property name="text">
+             <string>11. 您最近是否经常感到压力大？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="combo_stress">
+            <item><property name="text"><string>从不</string></property></item>
+            <item><property name="text"><string>偶尔</string></property></item>
+            <item><property name="text"><string>经常</string></property></item>
+            <item><property name="text"><string>几乎每天</string></property></item>
+           </widget>
+          </item>
+
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_emotion">
+            <property name="text">
+             <string>12. 您是否经常感到情绪低落？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="combo_emotion">
+            <item><property name="text"><string>从不</string></property></item>
+            <item><property name="text"><string>偶尔</string></property></item>
+            <item><property name="text"><string>经常</string></property></item>
+            <item><property name="text"><string>几乎每天</string></property></item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- 体力与日常活动 -->
+       <item>
+        <widget class="QGroupBox" name="group_activity">
+         <property name="title">
+          <string>七、体力与日常活动</string>
+         </property>
+         <layout class="QFormLayout" name="formLayout_activity">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_dailywork">
+            <property name="text">
+             <string>13. 您是否能够独立完成日常工作（如买菜、做饭、清洁）？</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="combo_dailywork">
+            <item><property name="text"><string>完全可以</string></property></item>
+            <item><property name="text"><string>需要少量帮助</string></property></item>
+            <item><property name="text"><string>大部分需要帮助</string></property></item>
+            <item><property name="text"><string>完全依赖他人</string></property></item>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+
+       <!-- 提交按钮 -->
+       <item>
+        <widget class="QPushButton" name="btn_submit">
+         <property name="text">
+          <string>提交问卷</string>
+         </property>
+        </widget>
+       </item>
+
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

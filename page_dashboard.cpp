@@ -1,14 +1,117 @@
 
 #include "page_dashboard.h"
 #include "ui_page_dashboard.h"
+
 #include "usercontext.h"
 #include "main_page.h"
+#include <QTimer>
 
 
 PageDashboard::PageDashboard(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Dashboard) {
     ui->setupUi(this);
     // 构造函数只做UI初始化，不做数据请求
     qDebug() << "[Dashboard] 构造完成，等待 fetchAppointments() 调用";
+    // 启动时自动查询健康评估结果
+    QTimer::singleShot(0, this, [this]{ this->fetchHealthResult(); });
+}
+
+// 健康评估结果查询与UI展示
+void PageDashboard::fetchHealthResult() {
+    int user_id = UserContext::instance()->userId();
+    qDebug() << "[Dashboard] fetchHealthResult: user_id=" << user_id;
+    // 获取 Main_Page 的 socket
+    QTcpSocket *socket = nullptr;
+    QWidget *p = parentWidget();
+    while (p) {
+        Main_Page *mainPage = qobject_cast<Main_Page *>(p);
+        if (mainPage) {
+            socket = mainPage->m_socket;
+            break;
+        }
+        p = p->parentWidget();
+    }
+    qDebug() << "[Dashboard] fetchHealthResult: 获取到socket=" << socket;
+    if (socket && socket->state() == QAbstractSocket::ConnectedState && user_id > 0) {
+        QJsonObject req;
+        req["type"] = "health.get";
+        req["seq"] = 1047;
+        req["user_id"] = QString::number(user_id);
+        QJsonDocument doc(req);
+        QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+        QByteArray packet;
+        QDataStream stream(&packet, QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_5_10);
+        stream << static_cast<quint32>(jsonData.size());
+        packet.append(jsonData);
+        qDebug() << "[Dashboard] fetchHealthResult: 发送到服务器:" << QString::fromUtf8(jsonData);
+        socket->write(packet);
+        socket->flush();
+        bool filled = false;
+        if (socket->waitForReadyRead(3000)) {
+            QByteArray resp = socket->readAll();
+            qDebug() << "[Dashboard] fetchHealthResult: 收到服务器反馈长度:" << resp.size();
+            if (resp.size() >= 4) {
+                QDataStream respStream(resp);
+                respStream.setVersion(QDataStream::Qt_5_10);
+                quint32 len = 0;
+                respStream >> len;
+                QByteArray jsonResp = resp.right(resp.size() - 4);
+                qDebug() << "[Dashboard] fetchHealthResult: 返回json:" << QString::fromUtf8(jsonResp);
+                QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
+                if (respDoc.isObject()) {
+                    QJsonObject respObj = respDoc.object();
+                    if (respObj.value("type").toString() == "health.get" && respObj.value("seq").toInt() == 1047) {
+                        QJsonObject payload = respObj.value("payload").toObject();
+                        QString time = payload.value("time").toString();
+                        QString risk_level = payload.value("risk_level").toString();
+                        QJsonArray adviceArr = payload.value("advice").toArray();
+                        // 检查字段是否为空
+                        if (!time.isEmpty() && !risk_level.isEmpty() && adviceArr.size() > 0) {
+                            qDebug() << "[Dashboard] 健康评估结果: time=" << time << ", risk_level=" << risk_level << ", adviceArr=" << adviceArr;
+                            if (ui->time) ui->time->setText("评估时间:" + time);
+                            if (ui->level) ui->level->setText("风险等级: " + risk_level);
+                            if (ui->labelTip1) ui->labelTip1->setText(adviceArr.size() > 0 ? adviceArr[0].toString() : "");
+                            if (ui->labelTip2) ui->labelTip2->setText(adviceArr.size() > 1 ? adviceArr[1].toString() : "");
+                            if (ui->labelTip3) ui->labelTip3->setText(adviceArr.size() > 2 ? adviceArr[2].toString() : "");
+                            filled = true;
+                        }
+                    } else {
+                        qDebug() << "[Dashboard] fetchHealthResult: 服务器返回type/seq不匹配";
+                    }
+                } else {
+                    qDebug() << "[Dashboard] fetchHealthResult: 返回json解析失败";
+                }
+            } else {
+                qDebug() << "[Dashboard] fetchHealthResult: 返回数据长度异常";
+            }
+        } else {
+            qDebug() << "[Dashboard] fetchHealthResult: 服务器无返回";
+        }
+        // 如果未填充，显示通用建议
+        if (!filled) {
+            QString now = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm");
+            QString risk = "无";
+            QStringList tips = {"保持健康生活方式", "定期体检", "如有不适及时就医"};
+            qDebug() << "[Dashboard] 健康评估无返回，填充默认建议: time=" << now << ", risk_level=" << risk << ", tips=" << tips;
+            if (ui->time) ui->time->setText("评估时间:" + now);
+            if (ui->level) ui->level->setText("风险等级: " + risk);
+            if (ui->labelTip1) ui->labelTip1->setText(tips.value(0));
+            if (ui->labelTip2) ui->labelTip2->setText(tips.value(1));
+            if (ui->labelTip3) ui->labelTip3->setText(tips.value(2));
+        }
+    } else {
+        qDebug() << "[Dashboard] fetchHealthResult: socket未连接或user_id无效";
+        // 也填充默认建议
+        QString now = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm");
+        QString risk = "无";
+        QStringList tips = {"保持健康生活方式", "定期体检", "如有不适及时就医"};
+        qDebug() << "[Dashboard] 健康评估无返回，填充默认建议: time=" << now << ", risk_level=" << risk << ", tips=" << tips;
+        if (ui->time) ui->time->setText("评估时间:" + now);
+        if (ui->level) ui->level->setText("风险等级: " + risk);
+        if (ui->labelTip1) ui->labelTip1->setText(tips.value(0));
+        if (ui->labelTip2) ui->labelTip2->setText(tips.value(1));
+        if (ui->labelTip3) ui->labelTip3->setText(tips.value(2));
+    }
 }
 
 // 预约列表请求与解析，延迟调用

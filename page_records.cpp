@@ -7,7 +7,8 @@
 
 PageRecords::PageRecords(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Records) {
     ui->setupUi(this);
-
+    ui->listWidget->setMinimumWidth(250);
+    ui->listWidget->setMaximumWidth(250);
     // 获取socket
     QTcpSocket *socket = nullptr;
     QWidget *p = parent;

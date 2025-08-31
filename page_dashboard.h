@@ -22,6 +22,7 @@ public:
     explicit PageDashboard(QWidget *parent = nullptr);
     ~PageDashboard();
     void fetchAppointments();
+    void fetchHealthResult();
 private:
     Ui::Page_Dashboard *ui;
 };

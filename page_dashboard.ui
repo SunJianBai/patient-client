@@ -122,6 +122,20 @@
        </property>
        <layout class="QVBoxLayout" name="healthTipsLayout">
         <item>
+         <widget class="QLabel" name="time">
+          <property name="text">
+           <string>评估时间:---</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="level">
+          <property name="text">
+           <string>风险等级: ---</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QLabel" name="labelTip1">
           <property name="text">
            <string>您最近一次血压测量偏高，建议复查。</string>
