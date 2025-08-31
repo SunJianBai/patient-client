@@ -167,7 +167,7 @@ void PageDashboard::fetchAppointments() {
                 QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
                 if (respDoc.isObject()) {
                     QJsonObject respObj = respDoc.object();
-                    if(true){
+                    if(false){
                         // ================== 测试数据区域（可注释/取消注释启用） ==================
                         // 说明：如需测试，无需服务器返回时可直接填充数据到UI
                         // 建议仅在开发/调试阶段启用，正式环境请注释掉此块
