@@ -1,4 +1,4 @@
-**协议基本规范**
+协议基本规范
 
 * **传输层** ：TCP
 * **编码** ：UTF-8
@@ -86,11 +86,11 @@
 
   ```
   {
-      "type": "login",   // 功能类型
-      "seq": 1001,         // 请求序号，请求和响应对应
-      "user":"AAA",//用户名
-      "type": "patient" or "doctor",
-      "pswd":"1234"//密码
+      "type": "login",   // 功能类型
+      "seq": 1001,         // 请求序号，请求和响应对应
+      "user":"AAA",//用户名
+      "type": "patient" or "doctor",
+      "pswd":"1234"//密码
     }
   ```
 * **响应**
@@ -111,6 +111,67 @@
 
 ### 3. 预约管理
 
+#### 获取科室列表
+
+* **请求**
+  **返回所有科室的名称列表**
+
+```
+{
+  "type": "department_list",
+  "seq": 1097,
+}
+```
+
+* **响应**
+
+```
+{
+  "type": "department_list",
+  "seq": 1097,
+   "payload": {
+    "appointments": [
+      {"department_name": "呼吸科"},
+        {"department_name": "消化科"}
+    ]
+  }
+}
+```
+
+#### 获取医生列表 doctor_list
+
+* **请求**
+* **根据科室获取当前科室的所有医生信息**
+
+```
+{
+  "type": "doctor_list",
+  "seq": 1098,
+   "department_name":"呼吸科"
+}
+```
+
+* **响应**
+
+```
+{
+  "type": "doctor_list",
+  "seq": 1098,
+  "payload": {
+    "appointments": [
+      {"doctor_id": 2001,
+       "full_name":"XXX"               #医生名字
+      "bio":"XXXXXXXXXX",          #医生简介
+       "duty_start":"XXXXXXXX"     #医生出诊时间
+       "reg_fee" : 50,            #挂号费用
+       "daily_quota" : 50          #每天挂号人数
+      }
+    ]
+  }
+
+}
+```
+
 #### 创建预约 `appt.create`
 
 * **请求字段**
@@ -121,16 +182,16 @@
 
   ```
   {
-    "type": "appt.create",
-    "seq": 1003,
-    "user_id": 1001,
-    "payload": {
-      "doctor_id": 2001,
-      "start_time": "2025-08-25T10:00:00"
-        "age":20,   #年龄
-        "height":180,  #身高
-        "weight":60,   #体重（kg）
-  "sympptoms":"感冒发烧"  #症状
+    "type": "appt.create",
+    "seq": 1003,
+    "user_id": 1001,
+    "payload": {
+      "doctor_id": 2001,
+      "start_time": "2025-08-25T10:00:00"
+        "age":20,   #年龄
+        "height":180,  #身高
+        "weight":60,   #体重（kg）
+  		"sympptoms":"感冒发烧"  #症状
     }
   }
   ```
@@ -151,10 +212,10 @@
 
 ```
 {
-  "type": "appt.list",
-  "seq": 1004,
-  "user_id": "1234",   #user_id表明用户身份
-  "payload": {}
+  "type": "appt.list",
+  "seq": 1004,
+  "user_id": "1234",   #user_id表明用户身份
+  "payload": {}
 }
 ```
 
@@ -162,18 +223,27 @@
 
 * `appointments`：数组，包含每个预约对象（查询该用户的全部预约记录）
   * `appt_id`：预约 ID
-  * `doctor_id`：对应医生 ID
+  * `doctor_name`：对应医生名字
+  * `department_name` :科室名字
   * `time`：预约时间
   * `status`：状态（`pending/confirmed/cancelled` 等）
 
 ```
 {
-  "ok": true,
-  "seq": 1004,
-  "payload": {
-    "appointments": [
-      {"appt_id": 888, "doctor_id": 2001, "time": "2025-08-25T10:00:00", "status": "confirmed"}
-    ]
+  "ok": true,
+  "seq": 1004,
+  "payload": {
+    "num_pending":5,
+    "num_confirmed":6,
+     "num_cancelled":4,
+    "appointments": [
+      {"appt_id": 888, 
+       "doctor_name": "张医生",
+       "department_name":"呼吸科",
+       "time": "2025-08-25 10:00", 
+       "status": "confirmed"
+      }
+    ]
   }
 }
 ```
@@ -190,9 +260,9 @@
 
   ```
   {
-    "type": "appt.cancel",
-    "seq": 1005,
-    "payload": {"appt_id": 888}
+    "type": "appt.cancel",
+    "seq": 1005,
+    "payload": {"appt_id": 888}
   }
   ```
 
@@ -211,27 +281,34 @@
 * **请求字段**
   * **空对象即可**
 * **响应字段**
+  **就诊时间**
   * `appt_id`：病例 ID
   * `doctor_id`：医生 ID
+  * **医生名字**
+  * **医生科室名字**
+  * **患者症状**
   * `prescription`：处方/医嘱内容
 * **请求**
   ```
   {
-    "type": "record.list",
-    "seq": 1006,
-    "user_id": "1234",   #user_id表明用户身份
-     "appt_id":"101"   #预约id
+    "type": "record.list",
+    "seq": 1006,
+    "user_id": "1234",   #user_id表明用户身份
+     "appt_id":"101"   #预约id
   }
   ```
 * **响应**
   ```
   {
-    "ok": true,
-    "seq": 1006,
-    "payload": {
-        "appt_id": 3001, 
-        "doctor_id": 2001, 
-        "prescription": "多喝热水"
+    "ok": true,
+    "seq": 1006,
+    "payload": {
+        "appt_id": 3001, 
+        "doctor_id": 2001, 
+        "doctor_name": "张医生",
+        "department_name":"呼吸科",
+        "sympptoms":"感冒发烧",
+        "prescription": "多喝热水"
     }
   }
   ```
@@ -249,22 +326,53 @@
 * **请求**
   ```
   {
-    "type": "health.submit",
-    "seq": 7,
-    "token": "abcd1234",
-    "payload": {
-      "answers": [1, 0, 3, 2]
+    "type": "health.submit",
+    "seq": 1048,
+    "user_id": "1234",
+    "payload": {
+        "time":"2025-08-25 10:00", 
+       "risk_level": "高",
+    	"advice": [
+          "建议规律作息",
+          "增加适度运动",
+          "定期监测血糖"
+    ]
     }
   }
   ```
 * **响应**
-  ```
+  <pre class="md-fences mock-cm md-end-block" spellcheck="false" lang="json" cid="n212" mdtype="fences"><br/>{<br/>	"ok": true, <br/>	"seq": 1048<br/>}</pre>
 
+#### 获取健康评估
+
+* * `ans(可选)：`string `可以集成ai给出建议`
+* **请求**
+  ```
   {
-  "ok": true, 
-  "seq": 7, 
-  "payload": {"score": 85, "risk": "low"},
-  "ans":"AI给出的建议"
+    "type": "health.get",
+    "seq": 1047,
+    "user_id": "1234"
+  }
+  ```
+* **响应**
+  **type**
+  **seq**
+  **时间**
+  **风险**
+  **建议（3条）**
+  ```
+  {
+      "type": "health.get",
+  	"seq": 1047
+    	"payload": {
+      	"time":"2025-08-25 10:00", 
+       "risk_level": "高",
+    	"advice": [
+          "建议规律作息",
+          "增加适度运动",
+          "定期监测血糖"
+    ]
+    }
   }
   ```
 
@@ -282,20 +390,20 @@
 * **请求**
   ```
   {
-    "type": "stats.patient",
-    "seq": 8,
-    "token": "abcd1234",
-    "payload": {}
+    "type": "stats.patient",
+    "seq": 8,
+    "token": "abcd1234",
+    "payload": {}
   }
   ```
 * **响应**
   ```
   {
-    "ok": true,
-    "seq": 8,
-    "payload": {
-      "visits": 5,
-      "appointments": {"pending": 2, "done": 3}
+    "ok": true,
+    "seq": 8,
+    "payload": {
+      "visits": 5,
+      "appointments": {"pending": 2, "done": 3}
     }
   }
   ```
@@ -323,8 +431,8 @@
     "seq": 9,
     "token": "abcd1234",
     "payload": {
-      "to": 2001,
-      "content": "医生你好，我有点发烧"
+      "to": 2001,
+      "content": "医生你好，我有点发烧"
     }
   }
   ```
@@ -336,11 +444,95 @@
 
 ```
   {
-    "type": "chat.recv",
-    "payload": {
-      "from": 2001,
-      "content": "注意多休息，多喝水",
-      "time": "2025-08-25T11:00:00"
-    }
+    "type": "chat.recv",
+    "payload": {
+      "from": 2001,
+      "content": "注意多休息，多喝水",
+      "time": "2025-08-25T11:00:00"
+    }
   }
+```
+
+---
+
+### 8.个人信息
+
+#### 查看个人信息
+
+```
+{
+  "type": "userinfo",
+  "seq": 1099,
+  "user_id": 1234
+}
+```
+
+```
+{ 
+  "type": "userinfo",
+  "seq": 1099,
+  "payload": {
+    "user": "alice",
+    "role":'patient',
+    "name":"用户真实姓名",
+    "gender":"男",
+    "phone": "13800138000",
+    "id_number": "身份证",
+    "adress":"北京市" 
+  }
+}
+```
+
+#### 修改个人信息
+
+**姓名**
+
+**手机号**
+
+**身份证**
+
+**住址**
+
+```
+{ 
+  "type": "change_user_info",
+  "seq": 1050,
+  "payload": {
+    "user_id": 1234,
+    "name":"用户真实姓名",
+    "phone": "13800138000",
+    "id_number": "身份证",
+    "adress":"北京市" 
+  }
+}
+```
+
+```
+{
+ "ok": true, 
+ "seq": 1050, 
+}
+```
+
+### 消息发送
+
+**请求：**
+
+```
+{
+"type":"message",
+"sender":"patient",
+"content":"xxxxxx"
+}
+```
+
+**接收**
+
+```
+{
+"type":"message.return",
+"sender":"doctor",
+ "time":"2025-08-25 10:00",
+"content":"xxxxxx"
+}
 ```

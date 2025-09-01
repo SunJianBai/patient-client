@@ -61,7 +61,6 @@
 * `chatbubblewidget.cpp/h`：自绘聊天气泡控件，支持内容自适应换行、短文本紧凑显示。
 * `chatdatabase.cpp/h`：本地聊天消息数据库，SQLite实现，支持消息持久化。
 * `chatlistwidget.cpp/h`：聊天消息列表控件（部分历史实现，现主用chatbubblewidget）。
-* `qnchatmessage.cpp/h`：早期气泡控件实现（现已弃用）。
 
 ### 用户与设置
 
