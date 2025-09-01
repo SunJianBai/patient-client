@@ -39,7 +39,10 @@ Main_Page::Main_Page(QWidget *parent) :
                     qDebug() << "[Main_Page] 初始化首页 PageDashboard";
                 }
                 targetPage = pageDashboard;
-                if (pageDashboard) pageDashboard->fetchAppointments();
+                if (pageDashboard) {
+                    pageDashboard->fetchHealthResult(); // 每次切换都请求健康评估
+                    pageDashboard->fetchAppointments();
+                }
                 qDebug() << "首页"; break;
             case 1:
                 if (!pageAppointment) {

@@ -10,9 +10,7 @@
 PageDashboard::PageDashboard(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Dashboard) {
     ui->setupUi(this);
     // 构造函数只做UI初始化，不做数据请求
-    qDebug() << "[Dashboard] 构造完成，等待 fetchAppointments() 调用";
-    // 启动时自动查询健康评估结果
-    QTimer::singleShot(0, this, [this]{ this->fetchHealthResult(); });
+    qDebug() << "[Dashboard] 构造完成，等待 fetchHealthResult()/fetchAppointments() 调用";
 }
 
 // 健康评估结果查询与UI展示
