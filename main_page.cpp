@@ -70,6 +70,14 @@ Main_Page::Main_Page(QWidget *parent) :
                     pageChat = new PageChat(this);
                     ui->mainStack->addWidget(pageChat);
                     qDebug() << "[Main_Page] 初始化医患沟通 PageChat";
+                    // 启动时立即查找socket并监听
+                    QTcpSocket *socket = m_socket;
+                    if (socket) {
+                        qDebug() << "[Main_Page] PageChat启动时自动调用listenSocket, socket=" << socket;
+                        pageChat->listenSocket(socket);
+                    } else {
+                        qDebug() << "[Main_Page] PageChat启动时未找到socket, 无法自动监听";
+                    }
                 }
                 targetPage = pageChat;
                 qDebug() << "医患沟通"; break;

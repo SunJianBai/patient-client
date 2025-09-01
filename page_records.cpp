@@ -15,6 +15,8 @@ PageRecords::PageRecords(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Rec
     }
     ui->listWidget->setMinimumWidth(250);
     ui->listWidget->setMaximumWidth(250);
+    // prescription为QTextEdit只读
+    if (ui->prescription) ui->prescription->setReadOnly(true);
     // 选择预约时间后，请求详细记录
     connect(ui->listWidget, &QListWidget::itemClicked, this, [=](QListWidgetItem *item){
         int appt_id = item->data(Qt::UserRole).toInt();
@@ -64,10 +66,10 @@ PageRecords::PageRecords(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Rec
                             QString symp = payload.value("sympptoms").toString();
                             QString pres = payload.value("prescription").toString();
                             qDebug() << "[Records] 详细记录: doctor=" << doctor << ", dept=" << dept << ", symp=" << symp << ", pres=" << pres;
-                            ui->doctor_name->setText(doctor);
-                            ui->department_name->setText(dept);
+                            if (ui->doctor_and_department)
+                                ui->doctor_and_department->setText(QString("医生: %1  |  科室: %2").arg(doctor, dept));
                             ui->sympptoms->setText(symp);
-                            ui->prescription->setText(pres);
+                            if (ui->prescription) ui->prescription->setPlainText(pres);
                         }
                     }
                 }

@@ -49,8 +49,20 @@ PageChat::PageChat(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Chat) {
     connect(ui->btn_send, &QPushButton::clicked, this, &PageChat::onSendClicked);
     connect(this, &PageChat::newMessage, this, &PageChat::handleNewMessage);
 
-    // 监听socket（需外部调用listenSocket）
-
+    // 自动查找主页面socket并监听，保证始终监听服务器消息
+    QTcpSocket *socket = nullptr;
+    QWidget *p = parentWidget();
+    while (p) {
+        Main_Page *mainPage = qobject_cast<Main_Page *>(p);
+        if (mainPage) { socket = mainPage->m_socket; break; }
+        p = p->parentWidget();
+    }
+    if (socket) {
+        qDebug() << "[Chat] 构造时自动调用listenSocket, socket=" << socket;
+        listenSocket(socket);
+    } else {
+        qDebug() << "[Chat] 构造时未找到主页面socket, 无法自动监听";
+    }
     // 切换到本页面时自动加载历史
     loadHistory();
 }
@@ -139,7 +151,11 @@ void PageChat::onSendClicked() {
 
 void PageChat::listenSocket(QTcpSocket *socket) {
     m_socket = socket;
-    if (!m_socket) return;
+    if (!m_socket) {
+        qDebug() << "[Chat] listenSocket: socket为空，无法监听";
+        return;
+    }
+    qDebug() << "[Chat] listenSocket: 开始监听服务器消息, socket=" << m_socket;
     connect(m_socket, &QTcpSocket::readyRead, this, [=](){
         while (m_socket->bytesAvailable() > 0) {
             QByteArray resp = m_socket->readAll();
@@ -168,13 +184,20 @@ void PageChat::listenSocket(QTcpSocket *socket) {
                         msg.sender = sender;
                         msg.content = content;
                         msg.time = time;
-                        db.addMessage(msg);
+                        bool ok = db.addMessage(msg);
+                        qDebug() << "[Chat] 新消息已存入本地数据库, ok=" << ok << ", sender=" << sender << ", content=" << content << ", time=" << time;
                         emit newMessage(msg);
+                    } else {
+                        qDebug() << "[Chat] 收到非聊天消息，type=" << respObj.value("type").toString();
                     }
+                } else {
+                    qDebug() << "[Chat] 服务器返回非对象JSON，忽略";
                 }
+            } else {
+                qDebug() << "[Chat] 服务器返回数据长度异常，忽略";
             }
         }
-    });
+    }, Qt::UniqueConnection);
 }
 
 void PageChat::handleNewMessage(const ChatMessage &msg) {

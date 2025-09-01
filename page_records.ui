@@ -30,34 +30,16 @@
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>医生名字:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLabel" name="doctor_name">
-       <property name="text">
-        <string>null</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>科室:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="3">
-      <widget class="QLabel" name="department_name">
-       <property name="text">
-        <string>null</string>
-       </property>
-      </widget>
-     </item>
+    <item row="0" column="0" colspan="4">
+     <widget class="QLabel" name="doctor_and_department">
+      <property name="text">
+       <string>医生: null  |  科室: null</string>
+      </property>
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Fixed"/>
+      </property>
+     </widget>
+    </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
@@ -66,11 +48,20 @@
       </widget>
      </item>
      <item row="1" column="1" colspan="3">
-      <widget class="QLabel" name="sympptoms">
-       <property name="text">
-        <string>null</string>
-       </property>
-      </widget>
+    <widget class="QLabel" name="sympptoms">
+     <property name="text">
+      <string>null</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="maximumHeight">
+      <number>80</number>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed"/>
+     </property>
+    </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_4">
@@ -80,11 +71,23 @@
       </widget>
      </item>
      <item row="2" column="1" colspan="3">
-      <widget class="QLabel" name="prescription">
-       <property name="text">
-        <string>null</string>
-       </property>
-      </widget>
+    <widget class="QTextEdit" name="prescription">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding"/>
+     </property>
+     <property name="minimumHeight">
+      <number>80</number>
+     </property>
+     <property name="maximumHeight">
+      <number>200</number>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAsNeeded</enum>
+     </property>
+    </widget>
      </item>
     </layout>
    </item>
