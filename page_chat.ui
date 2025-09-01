@@ -15,12 +15,67 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>这里是“医患沟通”页面</string>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>880</width>
+        <height>560</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="chatLayout">
+       <property name="spacing">
+        <number>10</number>
+       </property>
+       <property name="leftMargin">
+        <number>10</number>
+       </property>
+       <property name="rightMargin">
+        <number>10</number>
+       </property>
+       <property name="topMargin">
+        <number>10</number>
+       </property>
+       <property name="bottomMargin">
+        <number>10</number>
+       </property>
+      </layout>
+     </widget>
     </widget>
    </item>
+        <item>
+         <layout class="QHBoxLayout" name="inputLayout">
+          <item>
+            <widget class="QTextEdit" name="textEdit_input">
+             <property name="placeholderText">
+              <string>请输入消息...</string>
+             </property>
+             <property name="minimumHeight">
+              <number>36</number>
+             </property>
+             <property name="maximumHeight">
+              <number>120</number>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred"/>
+             </property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="btn_send">
+             <property name="text">
+              <string>发送</string>
+             </property>
+            </widget>
+          </item>
+         </layout>
+        </item>
+
   </layout>
  </widget>
  <resources/>
