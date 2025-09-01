@@ -56,6 +56,11 @@ Main_Page::Main_Page(QWidget *parent) :
                     qDebug() << "[Main_Page] 初始化病例 PageRecords";
                 }
                 targetPage = pageRecords;
+                // 每次切换都刷新病例
+                if (pageRecords) {
+                    qDebug() << "[Main_Page] 刷新病例界面，自动请求数据";
+                    QMetaObject::invokeMethod(pageRecords, "refreshRecords");
+                }
                 qDebug() << "我的病例"; break;
             case 3:
                 if (!pageChat) {
@@ -80,6 +85,11 @@ Main_Page::Main_Page(QWidget *parent) :
                     qDebug() << "[Main_Page] 初始化个人中心 PageProfile";
                 }
                 targetPage = pageProfile;
+                // 每次切换都刷新个人信息
+                if (pageProfile) {
+                    qDebug() << "[Main_Page] 刷新个人中心界面，自动请求数据";
+                    QMetaObject::invokeMethod(pageProfile, "refreshUserInfo");
+                }
                 qDebug() << "个人中心"; break;
             default:
                 qDebug() << "未知页面"; break;

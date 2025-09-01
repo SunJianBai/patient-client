@@ -2,17 +2,22 @@
 #include "page_profile.h"
 #include "ui_page_profile.h"
 
+
 PageProfile::PageProfile(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Profile) {
     ui->setupUi(this);
-
     // 优化初始显示：只显示个人信息板块
     ui->info->setVisible(true);
     ui->cg_info->setVisible(false);
     ui->cg_passwd->setVisible(false);
+    // 初始显示时刷新
+    refreshUserInfo();
 
-    // 获取socket（从父窗口Main_Page获取）
+}
+
+
+void PageProfile::refreshUserInfo() {
     QTcpSocket *socket = nullptr;
-    QWidget *p = parent;
+    QWidget *p = parentWidget();
     while (p) {
         Main_Page *mainPage = qobject_cast<Main_Page *>(p);
         if (mainPage) {
@@ -21,63 +26,56 @@ PageProfile::PageProfile(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Pro
         }
         p = p->parentWidget();
     }
-    qDebug() << "[Profile] 获取到socket:" << socket;
-
-    // 显示个人信息界面时，自动请求并刷新个人信息
-    auto refreshUserInfo = [=]() {
-        int user_id = UserContext::instance()->userId();
-        qDebug() << "[Profile] 刷新个人信息，user_id=" << user_id;
-        if (socket && socket->state() == QAbstractSocket::ConnectedState && user_id > 0) {
-            QJsonObject req;
-            req["type"] = "userinfo";
-            req["seq"] = 1099;
-            req["user_id"] = user_id;
-            QJsonDocument doc(req);
-            QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
-            QByteArray packet;
-            QDataStream stream(&packet, QIODevice::WriteOnly);
-            stream.setVersion(QDataStream::Qt_5_10);
-            stream << static_cast<quint32>(jsonData.size());
-            packet.append(jsonData);
-            qDebug() << "[Profile] 发送个人信息请求:" << QString::fromUtf8(jsonData);
-            socket->write(packet);
-            socket->flush();
-            if (socket->waitForReadyRead(3000)) {
-                QByteArray resp = socket->readAll();
-                qDebug() << "[Profile] 收到个人信息反馈长度:" << resp.size();
-                if (resp.size() >= 4) {
-                    QDataStream respStream(resp);
-                    respStream.setVersion(QDataStream::Qt_5_10);
-                    quint32 len = 0;
-                    respStream >> len;
-                    QByteArray jsonResp = resp.right(resp.size() - 4);
-                    qDebug() << "[Profile] 个人信息返回json:" << QString::fromUtf8(jsonResp);
-                    QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
-                    if (respDoc.isObject()) {
-                        QJsonObject respObj = respDoc.object();
-                        if (respObj.value("type").toString() == "userinfo" && respObj.value("seq").toInt() == 1099) {
-                            QJsonObject payload = respObj.value("payload").toObject();
-                            UserContext::instance()->setFromJson(payload);
-                            qDebug() << "[Profile] 更新UserContext:" << payload;
-                            // 刷新UI显示
-                            ui->name->setText(UserContext::instance()->name());
-                            ui->gender->setText(UserContext::instance()->gender());
-                            ui->phone->setText(UserContext::instance()->phone());
-                            ui->id->setText(UserContext::instance()->idNumber());
-                            ui->adress->setText(UserContext::instance()->adress());
-                        }
+    qDebug() << "[Profile] refreshUserInfo() 获取到socket:" << socket;
+    int user_id = UserContext::instance()->userId();
+    qDebug() << "[Profile] 刷新个人信息，user_id=" << user_id;
+    if (socket && socket->state() == QAbstractSocket::ConnectedState && user_id > 0) {
+        QJsonObject req;
+        req["type"] = "userinfo";
+        req["seq"] = 1099;
+        req["user_id"] = user_id;
+        QJsonDocument doc(req);
+        QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
+        QByteArray packet;
+        QDataStream stream(&packet, QIODevice::WriteOnly);
+        stream.setVersion(QDataStream::Qt_5_10);
+        stream << static_cast<quint32>(jsonData.size());
+        packet.append(jsonData);
+        qDebug() << "[Profile] 发送个人信息请求:" << QString::fromUtf8(jsonData);
+        socket->write(packet);
+        socket->flush();
+        if (socket->waitForReadyRead(3000)) {
+            QByteArray resp = socket->readAll();
+            qDebug() << "[Profile] 收到个人信息反馈长度:" << resp.size();
+            if (resp.size() >= 4) {
+                QDataStream respStream(resp);
+                respStream.setVersion(QDataStream::Qt_5_10);
+                quint32 len = 0;
+                respStream >> len;
+                QByteArray jsonResp = resp.right(resp.size() - 4);
+                qDebug() << "[Profile] 个人信息返回json:" << QString::fromUtf8(jsonResp);
+                QJsonDocument respDoc = QJsonDocument::fromJson(jsonResp);
+                if (respDoc.isObject()) {
+                    QJsonObject respObj = respDoc.object();
+                    if (respObj.value("type").toString() == "userinfo" && respObj.value("seq").toInt() == 1099) {
+                        QJsonObject payload = respObj.value("payload").toObject();
+                        UserContext::instance()->setFromJson(payload);
+                        qDebug() << "[Profile] 更新UserContext:" << payload;
+                        // 刷新UI显示
+                        ui->name->setText(UserContext::instance()->name());
+                        ui->gender->setText(UserContext::instance()->gender());
+                        ui->phone->setText(UserContext::instance()->phone());
+                        ui->id->setText(UserContext::instance()->idNumber());
+                        ui->adress->setText(UserContext::instance()->adress());
                     }
                 }
-            } else {
-                qDebug() << "[Profile] 个人信息服务器无返回";
             }
         } else {
-            qDebug() << "[Profile] socket未连接或user_id无效，无法刷新个人信息";
+            qDebug() << "[Profile] 个人信息服务器无返回";
         }
-    };
-
-    // 初始显示时刷新
-    refreshUserInfo();
+    } else {
+        qDebug() << "[Profile] socket未连接或user_id无效，无法刷新个人信息";
+    }
 
 
     // 点击“修改个人信息”按钮，切换到修改个人信息板块并自动填充输入框

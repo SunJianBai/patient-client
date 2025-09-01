@@ -22,6 +22,7 @@ class PageProfile : public QWidget {
 public:
     explicit PageProfile(QWidget *parent = nullptr);
     ~PageProfile();
+    Q_INVOKABLE void refreshUserInfo();
 private:
     Ui::Page_Profile *ui;
 };

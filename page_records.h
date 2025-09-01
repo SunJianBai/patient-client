@@ -11,6 +11,7 @@ class PageRecords : public QWidget {
 public:
     explicit PageRecords(QWidget *parent = nullptr);
     ~PageRecords();
+    Q_INVOKABLE void refreshRecords();
 
 private:
     Ui::Page_Records *ui;
