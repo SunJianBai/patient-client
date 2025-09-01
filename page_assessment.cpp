@@ -5,6 +5,12 @@
 
 PageAssessment::PageAssessment(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Assessment) {
     ui->setupUi(this);
+    QFile qssFile(":/style/styles/assessment_style.qss");
+    if (qssFile.open(QFile::ReadOnly)) {
+        QString style = QLatin1String(qssFile.readAll());
+        qApp->setStyleSheet(style);
+        qssFile.close();
+    }
     connect(ui->btn_submit, &QPushButton::clicked, this, &PageAssessment::onSubmitClicked);
 }
 PageAssessment::~PageAssessment() {
@@ -186,7 +192,7 @@ void PageAssessment::onSubmitClicked() {
             static int seq = 1048;
             payload["seq"] = seq;
             int user_id = UserContext::instance()->userId();
-            payload["user_id"] = QString::number(user_id);
+            payload["user_id"] = user_id;
             QJsonObject pl;
             pl["time"] = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm");
             pl["risk_level"] = *risk_level;

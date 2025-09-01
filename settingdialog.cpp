@@ -60,7 +60,11 @@ void SettingDialog::on_connectBtn_clicked() {
 }
 
 void SettingDialog::on_disconnectBtn_clicked() {
-    m_socket->disconnectFromHost();
+    if (m_socket->state() == QAbstractSocket::ConnectingState) {
+        m_socket->abort(); // 强制中断连接尝试
+    } else {
+        m_socket->disconnectFromHost();
+    }
 }
 
 void SettingDialog::onSocketStateChanged(QAbstractSocket::SocketState state) {

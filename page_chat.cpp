@@ -35,6 +35,12 @@ public:
 
 PageChat::PageChat(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Chat) {
     ui->setupUi(this);
+    QFile qssFile(":/style/styles/chat_style.qss");
+    if (qssFile.open(QFile::ReadOnly)) {
+        QString style = QLatin1String(qssFile.readAll());
+        qApp->setStyleSheet(style);
+        qssFile.close();
+    }
     chatLayout = qobject_cast<QVBoxLayout*>(ui->scrollAreaWidgetContents->layout());
     user_id = UserContext::instance()->userId();
     db.open(user_id);

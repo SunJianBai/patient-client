@@ -7,6 +7,12 @@
 
 PageRecords::PageRecords(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Records) {
     ui->setupUi(this);
+    QFile qssFile(":/style/styles/records_style.qss");
+    if (qssFile.open(QFile::ReadOnly)) {
+        QString style = QLatin1String(qssFile.readAll());
+        qApp->setStyleSheet(style);
+        qssFile.close();
+    }
     ui->listWidget->setMinimumWidth(250);
     ui->listWidget->setMaximumWidth(250);
     // 选择预约时间后，请求详细记录

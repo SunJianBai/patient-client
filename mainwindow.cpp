@@ -11,6 +11,12 @@ MainWindow::MainWindow(QWidget *parent)
     , m_settingDialog(nullptr)
 {
     ui->setupUi(this);
+    QFile qssFile(":/style/styles/login.qss");
+    if (qssFile.open(QFile::ReadOnly)) {
+        QString style = QLatin1String(qssFile.readAll());
+        qApp->setStyleSheet(style);
+        qssFile.close();
+    }
     mainPage = new Main_Page();
     mainPage->setSocket(m_socket); // 传递socket实例
     signPage = new SignupForm(nullptr, this);  // 传入登录窗口指针
@@ -158,6 +164,14 @@ void MainWindow::setSocket(QTcpSocket *socket)
     m_socket = socket;
     if (signPage) {
         signPage->setSocket(socket);
+    }
+    // 检查连接状态，显示超时文本
+    if (!m_socket || m_socket->state() != QAbstractSocket::ConnectedState) {
+        QLabel *statusLabel = this->findChild<QLabel*>("statusLabel");
+        if (statusLabel) {
+            statusLabel->setText("连接超时");
+            statusLabel->setStyleSheet("color: red;");
+        }
     }
 }
 

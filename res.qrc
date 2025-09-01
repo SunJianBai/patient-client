@@ -1,9 +1,17 @@
 <RCC>
-    <qresource prefix="/img">
+    <qresource prefix="img">
         <file>resources/bg.jpg</file>
         <file>resources/logo1.jpg</file>
     </qresource>
-    <qresource prefix="/style">
-        <file>resources/global.qss</file>
+    <qresource prefix="style">
+        <file>styles/global.qss</file>
+        <file>styles/appointment_style.qss</file>
+        <file>styles/assessment_style.qss</file>
+        <file>styles/chat_style.qss</file>
+        <file>styles/dashboard_style.qss</file>
+        <file>styles/mainpage_style.qss</file>
+        <file>styles/profile_style.qss</file>
+        <file>styles/records_style.qss</file>
+        <file>styles/signupform_style.qss</file>
     </qresource>
 </RCC>

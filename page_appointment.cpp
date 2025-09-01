@@ -5,7 +5,12 @@
 
 PageAppointment::PageAppointment(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Appointment) {
     ui->setupUi(this);
-
+    QFile qssFile(":/style/styles/appointment_style.qss");
+    if (qssFile.open(QFile::ReadOnly)) {
+        QString style = QLatin1String(qssFile.readAll());
+        qApp->setStyleSheet(style);
+        qssFile.close();
+    }
 
     // 设置输入范围约束
     ui->age->setMinimum(1);

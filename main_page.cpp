@@ -8,7 +8,7 @@ Main_Page::Main_Page(QWidget *parent) :
 {
     ui->setupUi(this);
     // 加载全局样式表
-    QFile qssFile(":/style/resources/global.qss");
+    QFile qssFile(":/style/styles/mainpage_style.qss");
     if (qssFile.open(QFile::ReadOnly)) {
         QString style = QLatin1String(qssFile.readAll());
         qApp->setStyleSheet(style);

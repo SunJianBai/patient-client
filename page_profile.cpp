@@ -5,6 +5,12 @@
 
 PageProfile::PageProfile(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Profile) {
     ui->setupUi(this);
+    QFile qssFile(":/style/styles/profile_style.qss");
+    if (qssFile.open(QFile::ReadOnly)) {
+        QString style = QLatin1String(qssFile.readAll());
+        qApp->setStyleSheet(style);
+        qssFile.close();
+    }
     // 优化初始显示：只显示个人信息板块
     ui->info->setVisible(true);
     ui->cg_info->setVisible(false);

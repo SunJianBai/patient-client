@@ -9,6 +9,12 @@
 
 PageDashboard::PageDashboard(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Dashboard) {
     ui->setupUi(this);
+    QFile qssFile(":/style/styles/dashboard_style.qss");
+    if (qssFile.open(QFile::ReadOnly)) {
+        QString style = QLatin1String(qssFile.readAll());
+        qApp->setStyleSheet(style);
+        qssFile.close();
+    }
     // 构造函数只做UI初始化，不做数据请求
     qDebug() << "[Dashboard] 构造完成，等待 fetchHealthResult()/fetchAppointments() 调用";
 }
@@ -33,7 +39,7 @@ void PageDashboard::fetchHealthResult() {
         QJsonObject req;
         req["type"] = "health.get";
         req["seq"] = 1047;
-        req["user_id"] = QString::number(user_id);
+        req["user_id"] = user_id;
         QJsonDocument doc(req);
         QByteArray jsonData = doc.toJson(QJsonDocument::Compact);
         QByteArray packet;
