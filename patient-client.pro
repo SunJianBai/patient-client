@@ -30,7 +30,8 @@ SOURCES += \
     page_assessment.cpp \
     page_chat.cpp \
     settingdialog.cpp \
-    chatdatabase.cpp
+    chatdatabase.cpp \
+    chatbubblewidget.cpp
 
 
 HEADERS += \
@@ -46,7 +47,8 @@ HEADERS += \
     page_chat.h \
     settingdialog.h \
     usercontext.h \
-    datetime_utils.h
+    datetime_utils.h \
+    chatbubblewidget.h
 
 FORMS += \
     mainwindow.ui \

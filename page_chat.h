@@ -1,6 +1,8 @@
 #ifndef PAGE_CHAT_H
 #define PAGE_CHAT_H
 #include <QWidget>
+
+class ChatBubbleWidget;
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include <QTimer>

@@ -1,7 +1,9 @@
 #include "page_chat.h"
 #include "ui_page_chat.h"
+
 #include "usercontext.h"
 #include "main_page.h"
+#include "chatbubblewidget.h"
 
 class ChatBubble : public QLabel {
 public:
@@ -73,31 +75,17 @@ void PageChat::loadHistory() {
 }
 
 void PageChat::addMessageBubble(const ChatMessage &msg, bool isMine) {
-    QWidget *bubbleWidget = new QWidget(this);
-    QVBoxLayout *bubbleLayout = new QVBoxLayout(bubbleWidget);
-    bubbleLayout->setContentsMargins(0,0,0,0);
-    // 时间
-    QLabel *timeLabel = new QLabel(msg.time, bubbleWidget);
-    timeLabel->setStyleSheet("color:gray;font-size:24px;");
-    bubbleLayout->addWidget(timeLabel, 0, Qt::AlignHCenter);
-    // 气泡（用QLabel，自动换行，宽度自适应）
-    QLabel *bubble = new ChatBubble(msg.content, bubbleWidget);
-    bubble->setStyleSheet(isMine
-        ? "background:#aee571;border-radius:10px;padding:8px 12px;font-size:32px;"
-        : "background:#ffffff;border-radius:10px;padding:8px 12px;font-size:32px;border:1px solid #d0d0d0;");
-
-    QHBoxLayout *row = new QHBoxLayout();
-    row->setContentsMargins(0,0,0,0);
-    row->setSpacing(0);
-    if (isMine) {
-        row->addStretch();
-        row->addWidget(bubble, 1, Qt::AlignRight);
-    } else {
-        row->addWidget(bubble, 1, Qt::AlignLeft);
-        row->addStretch();
+    // 先插入时间气泡（居中，仿微信）
+    if (!msg.time.isEmpty()) {
+        QLabel *timeLabel = new QLabel(msg.time, this);
+        timeLabel->setAlignment(Qt::AlignHCenter);
+        timeLabel->setStyleSheet("color:gray;font-size:24px;padding:4px 16px;background:rgba(220,220,220,0.7);border-radius:8px;margin:8px 0;");
+        chatLayout->addWidget(timeLabel, 0, Qt::AlignHCenter);
     }
-    bubbleLayout->addLayout(row);
-    chatLayout->addWidget(bubbleWidget);
+    // 聊天气泡
+    ChatBubbleWidget *bubble = new ChatBubbleWidget(
+        msg.content, "", isMine ? ChatBubbleWidget::Mine : ChatBubbleWidget::Other, this);
+    chatLayout->addWidget(bubble);
     // 滚动到底部
     QTimer::singleShot(100, [this]{
         ui->scrollArea->verticalScrollBar()->setValue(ui->scrollArea->verticalScrollBar()->maximum());
