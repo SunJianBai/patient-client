@@ -49,7 +49,7 @@ PageChat::PageChat(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Chat) {
     connect(ui->btn_send, &QPushButton::clicked, this, &PageChat::onSendClicked);
     connect(this, &PageChat::newMessage, this, &PageChat::handleNewMessage);
 
-    // 自动查找主页面socket并监听，保证始终监听服务器消息
+    // 自动查找主页面socket，但不在构造时监听，改为 showEvent 时监听，hideEvent 时断开
     QTcpSocket *socket = nullptr;
     QWidget *p = parentWidget();
     while (p) {
@@ -57,14 +57,24 @@ PageChat::PageChat(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Chat) {
         if (mainPage) { socket = mainPage->m_socket; break; }
         p = p->parentWidget();
     }
-    if (socket) {
-        qDebug() << "[Chat] 构造时自动调用listenSocket, socket=" << socket;
-        listenSocket(socket);
-    } else {
-        qDebug() << "[Chat] 构造时未找到主页面socket, 无法自动监听";
-    }
+    m_socket = socket;
     // 切换到本页面时自动加载历史
     loadHistory();
+// 进入页面时自动监听socket，离开页面时断开监听
+}
+void PageChat::showEvent(QShowEvent *event) {
+    QWidget::showEvent(event);
+    if (m_socket) {
+        listenSocket(m_socket);
+    }
+}
+
+void PageChat::hideEvent(QHideEvent *event) {
+    QWidget::hideEvent(event);
+    // 断开socket监听，防止占用
+    if (m_socket) {
+        disconnect(m_socket, nullptr, this, nullptr);
+    }
 }
 
 PageChat::~PageChat() {

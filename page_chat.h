@@ -25,6 +25,9 @@ public:
     void loadHistory();
     void addMessageBubble(const ChatMessage &msg, bool isMine);
     void listenSocket(QTcpSocket *socket);
+protected:
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
 signals:
     void newMessage(const ChatMessage &msg);
 private slots:

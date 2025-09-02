@@ -7,6 +7,8 @@ Main_Page::Main_Page(QWidget *parent) :
     ui(new Ui::Main_Page)
 {
     ui->setupUi(this);
+    // 设置初始窗口大小更大
+    this->resize(1920, 1080);
     QString styleSheet = R"(
 /* 主窗口整体 */
 Main_Page {
