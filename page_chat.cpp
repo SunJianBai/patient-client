@@ -97,7 +97,7 @@ void PageChat::addMessageBubble(const ChatMessage &msg, bool isMine) {
     if (!msg.time.isEmpty()) {
         QLabel *timeLabel = new QLabel(msg.time, this);
         timeLabel->setAlignment(Qt::AlignHCenter);
-        timeLabel->setStyleSheet("color:gray;font-size:24px;padding:4px 16px;background:rgba(220,220,220,0.7);border-radius:8px;margin:8px 0;");
+        timeLabel->setStyleSheet("color:gray;font-size:11pt;padding:0.28em 1.12em;background:rgba(220,220,220,0.7);border-radius:0.56em;margin:0.56em 0;");
         chatLayout->addWidget(timeLabel, 0, Qt::AlignHCenter);
     }
     // 聊天气泡

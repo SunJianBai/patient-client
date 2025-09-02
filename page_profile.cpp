@@ -5,12 +5,112 @@
 
 PageProfile::PageProfile(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Profile) {
     ui->setupUi(this);
-    QFile qssFile(":/style/styles/profile_style.qss");
-    if (qssFile.open(QFile::ReadOnly)) {
-        QString style = QLatin1String(qssFile.readAll());
-        qApp->setStyleSheet(style);
-        qssFile.close();
-    }
+    QString styleSheet=R"(
+        /* 主窗口样式 */
+        Page_Profile {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                stop: 0 #f5f7fa, stop: 1 #c3cfe2);
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+        }
+
+        /* 面板容器样式 */
+        QFrame, QWidget {
+            background: rgba(255, 255, 255, 0.9);
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.56em;
+            padding: 1.05em;
+        }
+
+        /* 标题标签样式 */
+        QLabel {
+            color: #2c3e50;
+            font-size: 9.5pt;
+        }
+
+        QLabel[label_10], QLabel[label_6], QLabel[label] {
+            font-size: 12pt;
+            font-weight: bold;
+            color: #3498db;
+            padding-bottom: 0.7em;
+        }
+
+        /* 数据显示标签样式 */
+        #name, #gender, #phone, #id, #adress {
+            background: #f8f9fa;
+            border: 0.07em solid #e9ecef;
+            border-radius: 0.35em;
+            padding: 0.56em 0.84em;
+            color: #2c3e50;
+            font-size: 9.5pt;
+            min-height: 1.4em;
+        }
+
+        /* 输入框样式 */
+        QLineEdit {
+            background: white;
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.35em;
+            padding: 0.56em 0.84em;
+            font-size: 9.5pt;
+            color: #2c3e50;
+            min-height: 1.4em;
+        }
+
+        QLineEdit:focus {
+            border: 0.07em solid #3498db;
+        }
+
+        /* 按钮样式 */
+        QPushButton {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0.42em;
+            padding: 0.7em 1.4em;
+            font-weight: bold;
+            font-size: 10.5pt;
+        }
+
+        QPushButton:hover {
+            background: #2980b9;
+        }
+
+        QPushButton:pressed {
+            background: #21618c;
+        }
+
+        /* 返回按钮样式 */
+        #back1, #back2 {
+            background: #95a5a6;
+        }
+
+        #back1:hover, #back2:hover {
+            background: #7f8c8d;
+        }
+
+        /* 错误提示文本 */
+        #errortext2, #label_16 {
+            color: #e74c3c;
+            font-size: 9pt;
+            padding: 0.35em 0;
+        }
+
+        /* 布局间距调整 */
+        QGridLayout, QVBoxLayout, QHBoxLayout {
+            margin: 0.35em;
+            spacing: 0.7em;
+        }
+
+        /* 表单标签对齐 */
+        QLabel[label_7], QLabel[label_8], QLabel[label_9],
+        QLabel[label_11], QLabel[label_12], QLabel[label_13],
+        QLabel[label_14], QLabel[label_15],
+        QLabel[label_2], QLabel[label_3], QLabel[label_4], QLabel[label_5] {
+            font-weight: bold;
+            min-width: 5.6em;
+        }
+)";
+    this->setStyleSheet(styleSheet);
     // 优化初始显示：只显示个人信息板块
     ui->info->setVisible(true);
     ui->cg_info->setVisible(false);

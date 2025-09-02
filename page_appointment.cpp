@@ -5,12 +5,210 @@
 
 PageAppointment::PageAppointment(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Appointment) {
     ui->setupUi(this);
-    QFile qssFile(":/style/styles/appointment_style.qss");
-    if (qssFile.open(QFile::ReadOnly)) {
-        QString style = QLatin1String(qssFile.readAll());
-        qApp->setStyleSheet(style);
-        qssFile.close();
-    }
+    QString styleSheet=R"(
+        /* 预约页面整体样式 */
+        Page_Appointment {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                        stop: 0 #f8f9fa, stop: 1 #e9ecef);
+            font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        }
+
+        /* 标题样式 */
+        QLabel {
+            color: #2c3e50;
+            font-size: 11pt;
+            font-weight: 600;
+            padding: 0.5em 0;
+            background: transparent;
+        }
+
+        /* 输入框和选择框样式 */
+        QSpinBox, QComboBox, QTextEdit {
+            background: #ffffff;
+            border: 0.13em solid #e0e0e0;
+            border-radius: 0.7em;
+            padding: 0.8em 1em;
+            font-size: 10.5pt;
+            color: #2c3e50;
+            min-height: 2em;
+            selection-background-color: #3498db;
+        }
+
+        QSpinBox:focus, QComboBox:focus, QTextEdit:focus {
+            border: 0.13em solid #3498db;
+            background: #f8f9fa;
+            box-shadow: 0 0 0 0.2em rgba(52, 152, 219, 0.2);
+        }
+
+        QSpinBox:hover, QComboBox:hover, QTextEdit:hover {
+            border: 0.13em solid #a0aec0;
+        }
+
+        QSpinBox::up-button, QSpinBox::down-button {
+            border-radius: 0.3em;
+            background-color: #f1f3f4;
+            width: 1.3em;
+            border: 0.07em solid #e0e0e0;
+        }
+
+        QSpinBox::up-button:hover, QSpinBox::down-button:hover {
+            background-color: #e6e8eb;
+        }
+
+        QSpinBox::up-arrow {
+            image: none;
+            border-left: 0.33em solid transparent;
+            border-right: 0.33em solid transparent;
+            border-bottom: 0.33em solid #7f8c8d;
+            width: 0;
+            height: 0;
+            margin-top: 0.13em;
+        }
+
+        QSpinBox::down-arrow {
+            image: none;
+            border-left: 0.33em solid transparent;
+            border-right: 0.33em solid transparent;
+            border-top: 0.33em solid #7f8c8d;
+            width: 0;
+            height: 0;
+            margin-bottom: 0.13em;
+        }
+
+        QComboBox {
+            padding-right: 2em;
+        }
+
+        QComboBox::drop-down {
+            subcontrol-origin: padding;
+            subcontrol-position: top right;
+            width: 2em;
+            border-left-width: 0.07em;
+            border-left-color: #e0e0e0;
+            border-left-style: solid;
+            border-top-right-radius: 0.7em;
+            border-bottom-right-radius: 0.7em;
+            background: #f1f3f4;
+        }
+
+        QComboBox::drop-down:hover {
+            background: #e6e8eb;
+        }
+
+        QComboBox::down-arrow {
+            image: none;
+            border-left: 0.33em solid transparent;
+            border-right: 0.33em solid transparent;
+            border-top: 0.33em solid #7f8c8d;
+            width: 0;
+            height: 0;
+            margin-right: 0.7em;
+        }
+
+        QComboBox QAbstractItemView {
+            border: 0.13em solid #e0e0e0;
+            border-radius: 0.7em;
+            background: white;
+            selection-background-color: #3498db;
+            selection-color: white;
+            outline: 0;
+            padding: 0.33em;
+            margin-top: 0.33em;
+        }
+
+        QComboBox QAbstractItemView::item {
+            padding: 0.5em 0.7em;
+            border-radius: 0.33em;
+        }
+
+        QComboBox QAbstractItemView::item:selected {
+            background-color: #3498db;
+            color: white;
+        }
+
+        QComboBox QAbstractItemView::item:hover {
+            background-color: #e6f7ff;
+        }
+
+        /* 文本编辑框特定样式 */
+        QTextEdit {
+            padding: 0.8em;
+            font-size: 10.5pt;
+            line-height: 1.5;
+            min-height: 6em;
+        }
+
+        /* 按钮样式 - 更突出的设计 */
+        QPushButton {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                        stop: 0 #3498db, stop: 1 #2980b9);
+            color: white;
+            border: none;
+            border-radius: 0.7em;
+            padding: 1em 2em;
+            font-size: 12pt;
+            font-weight: 600;
+            margin: 0.7em;
+            box-shadow: 0 0.27em 0.4em rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        QPushButton:hover {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                        stop: 0 #2980b9, stop: 1 #2573a7);
+            box-shadow: 0 0.4em 0.53em rgba(0, 0, 0, 0.15);
+            transform: translateY(-0.07em);
+        }
+
+        QPushButton:pressed {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                        stop: 0 #2573a7, stop: 1 #1c638c);
+            box-shadow: 0 0.13em 0.27em rgba(0, 0, 0, 0.1);
+            transform: translateY(0.07em);
+        }
+
+        /* 布局样式 */
+        QGridLayout {
+            margin: 2em;
+            spacing: 1.2em;
+            background-color: white;
+            border-radius: 1em;
+            padding: 1.5em;
+            border: 0.13em solid #e0e0e0;
+            box-shadow: 0 0.67em 1.67em rgba(0, 0, 0, 0.1);
+        }
+
+        /* 表单行之间的分隔线效果 */
+        QGridLayout::item {
+            border-bottom: 0.07em solid #f0f0f0;
+            padding-bottom: 0.9em;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 800px) {
+            QGridLayout {
+                margin: 1em;
+                padding: 1em;
+            }
+
+            QLabel {
+                font-size: 10pt;
+            }
+
+            QSpinBox, QComboBox, QTextEdit {
+                padding: 0.7em;
+                font-size: 9.5pt;
+            }
+
+            QPushButton {
+                padding: 0.8em 1.2em;
+                font-size: 10pt;
+            }
+        }
+
+)";
+    this->setStyleSheet(styleSheet);
 
     // 设置输入范围约束
     ui->age->setMinimum(1);

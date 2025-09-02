@@ -7,13 +7,140 @@ Main_Page::Main_Page(QWidget *parent) :
     ui(new Ui::Main_Page)
 {
     ui->setupUi(this);
-    // 加载全局样式表
-    QFile qssFile(":/style/styles/mainpage_style.qss");
-    if (qssFile.open(QFile::ReadOnly)) {
-        QString style = QLatin1String(qssFile.readAll());
-        qApp->setStyleSheet(style);
-        qssFile.close();
-    }
+    QString styleSheet = R"(
+/* 主窗口整体 */
+Main_Page {
+    background-color: #f8f9fa;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    font-size: 13pt;
+}
+
+/* 侧边栏 */
+QWidget#sidebar {
+    background: #2c3e50;
+    border-right: 1px solid #1a2530;
+    min-width: 9.5em;
+    max-width: 9.5em;
+    padding: 0;
+    margin: 0;
+}
+
+QVBoxLayout#sidebarLayout {
+    margin: 0;
+    spacing: 0;
+}
+
+QLabel#userAvatar {
+    background-color: #3498db;
+    border-radius: 1.1em;
+    min-width: 2.3em;
+    max-width: 2.3em;
+    min-height: 2.3em;
+    max-height: 2.3em;
+    margin: 0 auto 0.5em auto;
+    qproperty-alignment: AlignCenter;
+    color: white;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+QLabel#userName {
+    color: white;
+    font-size: 0.9em;
+    font-weight: 600;
+    qproperty-alignment: AlignCenter;
+    margin: 0.2em 0 0.1em 0;
+}
+
+QLabel#userId {
+    color: #bdc3c7;
+    font-size: 0.8em;
+    qproperty-alignment: AlignCenter;
+    margin: 0 0 0.4em 0;
+}
+
+QListWidget#navList {
+    background: #2c3e50;
+    border: none;
+    outline: 0;
+    color: white;
+    font-size: 0.95em;
+    padding: 0;
+    margin: 0;
+}
+
+QListWidget#navList::item {
+    background: #2c3e50;
+    border: none;
+    padding: 0.5em 0.7em;
+    margin: 0;
+    border-radius: 0;
+    min-height: 1.2em;
+}
+
+QListWidget#navList::item:selected {
+    background-color: #66829e;
+    color: #fff;
+}
+
+QListWidget#navList::item:hover {
+    background-color: #1a4066;
+}
+
+/* 顶部栏 */
+QWidget#topBar {
+    background-color: #6185ba;
+    border-bottom: 1px solid #e0e0e0;
+    min-height: 2em;
+    max-height: 2em;
+    box-shadow: 0 0.08em 0.2em rgba(0,0,0,0.05);
+    margin: 0;
+    padding: 0;
+}
+
+QHBoxLayout#topBarLayout {
+    margin: 0;
+    spacing: 0.3em;
+}
+
+QPushButton#logoutBtn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 0.2em;
+    padding: 0.4em 0.7em;
+    font-size: 0.95em;
+    font-weight: 600;
+}
+QPushButton#logoutBtn:hover {
+    background-color: #c0392b;
+}
+QPushButton#logoutBtn:pressed {
+    background-color: #a93226;
+}
+
+/* 主内容区 */
+QStackedWidget#mainStack {
+    background: transparent;
+    border: none;
+    padding: 0.7em;
+}
+
+QVBoxLayout#rightLayout {
+    margin: 0;
+    spacing: 0;
+}
+
+QHBoxLayout#mainLayout {
+    margin: 0;
+    spacing: 0;
+    background-color: #f8f9fa;
+}
+
+)";
+    this->setStyleSheet(styleSheet);
+    // 禁用 alternatingRowColors，防止隔行白条
+    ui->navList->setAlternatingRowColors(false);
 
     // 清空 mainStack
     while (ui->mainStack->count() > 0) {

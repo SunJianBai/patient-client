@@ -9,12 +9,122 @@
 
 PageDashboard::PageDashboard(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Dashboard) {
     ui->setupUi(this);
-    QFile qssFile(":/style/styles/dashboard_style.qss");
-    if (qssFile.open(QFile::ReadOnly)) {
-        QString style = QLatin1String(qssFile.readAll());
-        qApp->setStyleSheet(style);
-        qssFile.close();
-    }
+    QString styleSheet=R"(
+        /* 主窗口样式 */
+        Page_Dashboard {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                stop: 0 #f5f7fa, stop: 1 #c3cfe2);
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+        }
+
+        /* 统计卡片样式 */
+        QGroupBox {
+            background: rgba(255, 255, 255, 0.9);
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.56em;
+            margin: 0.35em;
+            padding: 1.05em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        QGroupBox::title {
+            subcontrol-origin: margin;
+            subcontrol-position: top center;
+            padding: 0 0.56em;
+            background: #3498db;
+            color: white;
+            border-radius: 0.28em;
+        }
+
+        /* 统计数字样式 */
+        QLabel#pending, QLabel#confirmed, QLabel#cancelled {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #2c3e50;
+            qproperty-alignment: AlignCenter;
+        }
+
+        /* 表格样式 */
+        QTableWidget {
+            background: white;
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.35em;
+            gridline-color: #e9ecef;
+            alternate-background-color: #f8f9fa;
+        }
+
+        QTableWidget::item {
+            padding: 0.56em;
+            border: none;
+            border-bottom: 0.07em solid #e9ecef;
+        }
+
+        QTableWidget::item:selected {
+            background: #3498db;
+            color: white;
+        }
+
+        QHeaderView::section {
+            background: #3498db;
+            color: white;
+            padding: 0.56em;
+            border: none;
+            font-weight: bold;
+        }
+
+        /* 健康提示框样式 */
+        #healthTipsBox {
+            background: rgba(255, 255, 255, 0.9);
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.56em;
+            padding: 1.05em;
+        }
+
+        #healthTipsBox::title {
+            background: #2ecc71;
+            color: white;
+            border-radius: 0.28em;
+            padding: 0 0.56em;
+        }
+
+        /* 健康提示标签样式 */
+        #time, #level {
+            font-size: 10.5pt;
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 0.35em 0;
+            border-bottom: 0.07em solid #e9ecef;
+            margin-bottom: 0.7em;
+        }
+
+        #labelTip1, #labelTip2, #labelTip3 {
+            font-size: 9.5pt;
+            color: #34495e;
+            padding: 0.56em;
+            margin: 0.35em 0;
+            background: #f8f9fa;
+            border-radius: 0.35em;
+            border-left: 0.21em solid #3498db;
+        }
+
+        /* 布局调整 */
+        QVBoxLayout#verticalLayout, QHBoxLayout#statsLayout, QHBoxLayout#mainContentLayout {
+            margin: 0.7em;
+            spacing: 1.05em;
+        }
+
+        /* 卡片布局 */
+        QVBoxLayout#cardAppointmentLayout,
+        QVBoxLayout#cardRecordsLayout,
+        QVBoxLayout#cardMessagesLayout,
+        QVBoxLayout#recentAppointmentLayout,
+        QVBoxLayout#healthTipsLayout {
+            margin: 0.35em;
+            spacing: 0.7em;
+        }
+)";
+    this->setStyleSheet(styleSheet);
     // 构造函数只做UI初始化，不做数据请求
     qDebug() << "[Dashboard] 构造完成，等待 fetchHealthResult()/fetchAppointments() 调用";
 }

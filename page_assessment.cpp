@@ -5,12 +5,148 @@
 
 PageAssessment::PageAssessment(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Assessment) {
     ui->setupUi(this);
-    QFile qssFile(":/style/styles/assessment_style.qss");
-    if (qssFile.open(QFile::ReadOnly)) {
-        QString style = QLatin1String(qssFile.readAll());
-        qApp->setStyleSheet(style);
-        qssFile.close();
-    }
+    QString styleSheet=R"(
+        /* 主窗口样式 */
+        Page_Assessment {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                stop: 0 #f5f7fa, stop: 1 #c3cfe2);
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+        }
+
+        /* 滚动区域样式 */
+        QScrollArea {
+            background: transparent;
+            border: none;
+        }
+
+        QScrollArea > QWidget > QWidget {
+            background: transparent;
+        }
+
+        /* 分组框样式 */
+        QGroupBox {
+            font-weight: bold;
+            font-size: 10.5pt;
+            color: #2c3e50;
+            background: rgba(255, 255, 255, 0.8);
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.56em;
+            margin-top: 0.7em;
+            padding-top: 1.05em;
+        }
+
+        QGroupBox::title {
+            subcontrol-origin: margin;
+            subcontrol-position: top center;
+            padding: 0 0.56em;
+            background: #3498db;
+            color: white;
+            border-radius: 0.28em;
+        }
+
+        /* 标签样式 */
+        QLabel {
+            color: #2c3e50;
+            font-size: 9.5pt;
+            padding: 0.35em 0;
+        }
+
+        /* 组合框样式 */
+        QComboBox {
+            background: white;
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.35em;
+            padding: 0.42em 0.84em;
+            font-size: 9.5pt;
+            color: #2c3e50;
+            min-height: 1.4em;
+        }
+
+        QComboBox:focus {
+            border: 0.07em solid #3498db;
+        }
+
+        QComboBox::drop-down {
+            subcontrol-origin: padding;
+            subcontrol-position: top right;
+            width: 1.4em;
+            border-left: 0.07em solid #bdc3c7;
+            border-top-right-radius: 0.35em;
+            border-bottom-right-radius: 0.35em;
+        }
+
+        QComboBox::down-arrow {
+            image: url(none);
+            width: 0.84em;
+            height: 0.84em;
+        }
+
+        QComboBox QAbstractItemView {
+            background: white;
+            border: 0.07em solid #bdc3c7;
+            selection-background-color: #3498db;
+            selection-color: white;
+            outline: 0;
+        }
+
+        /* 复选框样式 */
+        QCheckBox {
+            color: #2c3e50;
+            font-size: 9.5pt;
+            padding: 0.35em 0;
+        }
+
+        QCheckBox::indicator {
+            width: 1.12em;
+            height: 1.12em;
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.21em;
+            background: white;
+        }
+
+        QCheckBox::indicator:checked {
+            background: #3498db;
+            border: 0.07em solid #3498db;
+            image: url(none);
+        }
+
+        QCheckBox::indicator:unchecked:hover {
+            border: 0.07em solid #3498db;
+        }
+
+        /* 按钮样式 */
+        QPushButton {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0.42em;
+            padding: 0.7em 1.4em;
+            font-weight: bold;
+            font-size: 10.5pt;
+            margin: 1.05em 0;
+        }
+
+        QPushButton:hover {
+            background: #2980b9;
+        }
+
+        QPushButton:pressed {
+            background: #21618c;
+        }
+
+        /* 表单布局间距 */
+        QFormLayout {
+            margin: 0.7em;
+            spacing: 0.56em;
+        }
+
+        /* 垂直布局间距 */
+        QVBoxLayout {
+            margin: 0.35em;
+            spacing: 0.35em;
+        }
+)";
+    this->setStyleSheet(styleSheet);
     connect(ui->btn_submit, &QPushButton::clicked, this, &PageAssessment::onSubmitClicked);
 }
 PageAssessment::~PageAssessment() {

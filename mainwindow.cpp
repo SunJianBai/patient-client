@@ -11,12 +11,172 @@ MainWindow::MainWindow(QWidget *parent)
     , m_settingDialog(nullptr)
 {
     ui->setupUi(this);
-    QFile qssFile(":/style/styles/login.qss");
-    if (qssFile.open(QFile::ReadOnly)) {
-        QString style = QLatin1String(qssFile.readAll());
-        qApp->setStyleSheet(style);
-        qssFile.close();
-    }
+    //设置样式
+    ui->loginErrorLabel->hide();
+    this->setStyleSheet(R"(
+        /* 主窗口样式 */
+        MainWindow {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                stop: 0 #f5f7fa, stop: 1 #c3cfe2);
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+        }
+
+        /* 中央部件样式 */
+        QVBoxLayout#verticalLayout {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 0.84em;
+            margin: 2.8em;
+            padding: 1.75em;
+            border: 0.07em solid #bdc3c7;
+        }
+
+        /* 标题标签样式 */
+        QLabel#titleLabel {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #2c3e50;
+            padding: 1.05em 0;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 0.56em;
+            margin-bottom: 1.4em;
+            border: 0.07em solid #bdc3c7;
+        }
+
+        /* 表单标签样式 */
+        QLabel {
+            color: #2c3e50;
+            font-size: 9.5pt;
+            font-weight: bold;
+            padding: 0.35em 0;
+        }
+
+        /* 错误提示标签 */
+        QLabel#loginErrorLabel {
+            color: #e74c3c;
+            font-size: 9pt;
+            padding: 0.56em 0.84em;
+            background-color: #fadbd8;
+            border-radius: 0.42em;
+            border: 0.07em solid #f5b7b1;
+            margin: 0.35em 0;
+            qproperty-alignment: AlignCenter;
+        }
+
+        QLabel#loginErrorLabel[text=""] {
+            background: transparent;
+            border: none;
+            padding: 0;
+            margin: 0;
+            height: 0;
+        }
+
+        /* 输入框样式 */
+        QLineEdit {
+            background: white;
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.35em;
+            padding: 0.56em 0.84em;
+            font-size: 9.5pt;
+            color: #2c3e50;
+            min-height: 1.4em;
+        }
+
+        QLineEdit:focus {
+            border: 0.07em solid #3498db;
+        }
+
+        QLineEdit:hover {
+            border: 0.07em solid #95a5a6;
+        }
+
+        /* 按钮样式 */
+        QPushButton {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0.42em;
+            padding: 0.7em 1.4em;
+            font-size: 10.5pt;
+            font-weight: bold;
+        }
+
+        QPushButton:hover {
+            background-color: #2980b9;
+        }
+
+        QPushButton:pressed {
+            background-color: #21618c;
+        }
+
+        /* 注册按钮特殊样式 */
+        QPushButton#sighupBtn {
+            background-color: #2ecc71;
+        }
+
+        QPushButton#sighupBtn:hover {
+            background-color: #27ae60;
+        }
+
+        QPushButton#sighupBtn:pressed {
+            background-color: #219653;
+        }
+
+        /* 设置按钮样式 */
+        QToolButton#settingBtn {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            border-radius: 0.42em;
+            padding: 0.56em 0.84em;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        QToolButton#settingBtn:hover {
+            background: #7f8c8d;
+        }
+
+        QToolButton#settingBtn:pressed {
+            background: #6c7a7b;
+        }
+
+        /* 复选框样式 */
+        QCheckBox {
+            color: #2c3e50;
+            font-size: 9.5pt;
+            spacing: 0.56em;
+            padding: 0.35em 0;
+        }
+
+        QCheckBox::indicator {
+            width: 1.12em;
+            height: 1.12em;
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.28em;
+            background: white;
+        }
+
+        QCheckBox::indicator:checked {
+            background: #3498db;
+            border: 0.07em solid #3498db;
+        }
+
+        QCheckBox::indicator:hover {
+            border: 0.07em solid #95a5a6;
+        }
+
+        /* 布局边距调整 */
+        QGridLayout#loginFormLayout, QVBoxLayout, QFormLayout {
+            margin: 0.35em;
+            spacing: 0.7em;
+        }
+
+        /* 表单布局标签对齐 */
+        QFormLayout::label {
+            padding-right: 1.05em;
+        }
+    )");
+
     mainPage = new Main_Page();
     mainPage->setSocket(m_socket); // 传递socket实例
     signPage = new SignupForm(nullptr, this);  // 传入登录窗口指针
@@ -116,6 +276,19 @@ bool MainWindow::validateLogin(const QString &username, const QString &password)
         return true;
     } else {
         ui->loginErrorLabel->setText("账号或密码错误");
+        ui->loginErrorLabel->setStyleSheet(R"(
+        /* 错误提示标签 */
+        QLabel#loginErrorLabel {
+            color: #e74c3c;
+            font-size: 12px;
+            padding: 8px 12px;
+            background-color: #fadbd8;
+            border-radius: 6px;
+            border: 1px solid #f5b7b1;
+            margin: 5px 0;
+            qproperty-alignment: AlignCenter;
+        }
+)");
         ui->loginErrorLabel->setStyleSheet("color: red;");
         ui->loginErrorLabel->show();
         return false;

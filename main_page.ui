@@ -17,12 +17,12 @@
    <layout class="QHBoxLayout" name="mainLayout">
     <item>
       <widget class="QWidget" name="sidebar">
-        <property name="minimumWidth">
-         <number>250</number>
-        </property>
-        <property name="maximumWidth">
-         <number>250</number>
-        </property>
+  <property name="minimumWidth">
+   <number>150</number>
+  </property>
+  <property name="maximumWidth">
+   <number>150</number>
+  </property>
      <layout class="QVBoxLayout" name="sidebarLayout">
       <item>
        <widget class="QLabel" name="userAvatar">
@@ -90,10 +90,10 @@
       <item>
         <widget class="QWidget" name="topBar">
           <property name="minimumHeight">
-            <number>50</number>
+            <number>36</number>
           </property>
           <property name="maximumHeight">
-            <number>50</number>
+            <number>36</number>
           </property>
        <layout class="QHBoxLayout" name="topBarLayout">
         <item>

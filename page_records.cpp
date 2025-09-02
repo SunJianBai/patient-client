@@ -7,12 +7,86 @@
 
 PageRecords::PageRecords(QWidget *parent) : QWidget(parent), ui(new Ui::Page_Records) {
     ui->setupUi(this);
-    QFile qssFile(":/style/styles/records_style.qss");
-    if (qssFile.open(QFile::ReadOnly)) {
-        QString style = QLatin1String(qssFile.readAll());
-        qApp->setStyleSheet(style);
-        qssFile.close();
-    }
+    QString styleSheet=R"(
+        /* 主窗口样式 */
+        Page_Records {
+            background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                stop: 0 #f5f7fa, stop: 1 #c3cfe2);
+            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+        }
+
+        /* 标题标签样式 */
+        QLabel {
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        #label {
+            font-size: 12pt;
+            padding: 0.6em 0;
+            color: #3498db;
+        }
+
+        #label_2, #label_3, #label_4, #label_5 {
+            font-size: 10.5pt;
+            padding: 0.35em;
+            background: transparent;
+        }
+
+        /* 列表控件样式 */
+        QListWidget {
+            background: white;
+            border: 0.07em solid #bdc3c7;
+            border-radius: 0.56em;
+            padding: 0.35em;
+            outline: 0;
+            font-size: 9.5pt;
+            color: #34495e;
+        }
+
+        QListWidget::item {
+            background: white;
+            border: none;
+            border-radius: 0.35em;
+            padding: 0.7em;
+            margin: 0.14em;
+        }
+
+        QListWidget::item:selected {
+            background: #3498db;
+            color: white;
+            border: none;
+        }
+
+        QListWidget::item:hover {
+            background: #e8f4fc;
+            color: #3498db;
+        }
+
+        /* 数据显示标签样式 */
+        #doctor_name, #department_name, #sympptoms, #prescription {
+            background: white;
+            border: 0.07em solid #dce4ec;
+            border-radius: 0.35em;
+            padding: 0.56em 0.84em;
+            margin: 0.14em;
+            color: #2c3e50;
+            font-size: 9.5pt;
+            min-height: 1.4em;
+        }
+
+        #sympptoms, #prescription {
+            border: 0.07em solid #dce4ec;
+            background: #f9f9f9;
+        }
+
+        /* 布局边距调整 */
+        QVBoxLayout, QHBoxLayout, QGridLayout {
+            margin: 0.7em;
+            spacing: 0.7em;
+        }
+)";
+    this->setStyleSheet(styleSheet);
     ui->listWidget->setMinimumWidth(250);
     ui->listWidget->setMaximumWidth(250);
     // prescription为QTextEdit只读
